@@ -1,47 +1,26 @@
 import { motion } from 'framer-motion'
 
-const StatsCard = ({ title, value, icon: Icon, color, description }) => {
-    const getColorClasses = () => {
-        switch (color) {
-            case 'emerald': return 'border-emerald-500/30 bg-emerald-500/10'
-            case 'violet': return 'border-violet-500/30 bg-violet-500/10'
-            case 'gold': return 'border-amber-500/30 bg-amber-500/10'
-            case 'coral': return 'border-rose-500/30 bg-rose-500/10'
-            case 'blue': return 'border-blue-500/30 bg-blue-500/10'
-            default: return 'border-emerald-500/30 bg-emerald-500/10'
-        }
-    }
-
-    const getIconColor = () => {
-        switch (color) {
-            case 'emerald': return 'text-emerald-400'
-            case 'violet': return 'text-violet-400'
-            case 'gold': return 'text-amber-400'
-            case 'coral': return 'text-rose-400'
-            case 'blue': return 'text-blue-400'
-            default: return 'text-emerald-400'
-        }
-    }
-
+const StatsCard = ({ title, value, icon: Icon }) => {
     return (
         <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             whileHover={{ y: -5, scale: 1.02 }}
-            className={`p-6 rounded-2xl border ${getColorClasses()} backdrop-blur-sm transition-all`}
+            className="p-10 rounded-[2.5rem] bg-white/[0.03] border border-white/5 hover:border-accent-pink/20 hover:bg-white/[0.05] transition-all duration-500 group shadow-2xl relative overflow-hidden"
         >
-            <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl ${getColorClasses()}`}>
-                    <Icon className={`w-6 h-6 ${getIconColor()}`} />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-accent-pink/5 blur-2xl rounded-full translate-x-12 -translate-y-12 group-hover:bg-accent-pink/10 transition-colors"></div>
+            <div className="flex items-center gap-8 relative z-10">
+                <div className="w-16 h-16 rounded-[1.2rem] bg-primary-dark border border-white/10 flex items-center justify-center text-accent-pink group-hover:scale-110 transition-transform shadow-inner">
+                    <Icon className="w-8 h-8" />
                 </div>
-                {description && (
-                    <span className="text-xs font-medium px-2 py-1 rounded-full bg-white/10 text-gray-400">
-                        {description}
-                    </span>
-                )}
+                <div>
+                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-2">{title}</p>
+                    <h3 className="text-4xl font-black text-white tracking-widest leading-none">{value}</h3>
+                </div>
             </div>
-            <div>
-                <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">{title}</p>
-                <h3 className={`text-3xl font-bold mt-1 ${getIconColor()}`}>{value}</h3>
-            </div>
+            {/* Visual accent bar */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-accent-pink/0 group-hover:bg-accent-pink/50 rounded-full transition-all duration-500 group-hover:w-20"></div>
         </motion.div>
     )
 }

@@ -30,6 +30,15 @@ logs/
 merged_logs.txt
 
 # Editor
+# Generated Static Files
+backend/static/qrcodes/*.png
+backend/static/qrcodes/*.jpg
+backend/static/qrcodes/*.jpeg
+
+# VS Code
 .vscode/
-.idea/
-*.swp
+
+# OS generated
+.DS_Store
+Thumbs.db
+

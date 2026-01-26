@@ -236,10 +236,6 @@ ADMIN_PASSWORD=admin123
    - Paste the product hash
    - View verification result
 
-## 📄 License
-
-MIT License
-
 ## 🤝 Contributing
 
 1. Fork the repository

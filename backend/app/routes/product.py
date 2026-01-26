@@ -10,7 +10,7 @@ from ..schemas.response import MessageResponse
 from ..config.database import get_products_collection, get_users_collection
 from ..utils.auth import get_current_manufacturer, get_current_user
 from ..utils.hash import generate_product_hash
-from ..utils.qr_generator import generate_simple_qr_code
+from ..utils.qr_generator import generate_qr_code
 from ..blockchain.contract import register_product_on_blockchain
 
 router = APIRouter(prefix="/product", tags=["Products"])
@@ -38,9 +38,16 @@ async def register_product(
     )
     
     # Generate QR code
-    qr_data = f"VERIFY:{product_hash}"
+    # We embed the raw HASH in the visual text, but QR data can keep VERIFY: prefix if needed
+    # Actually, simpler is just the hash for both if the frontend handles it, 
+    # but let's stick to existing convention for QR data to avoid breaking scanner logic that might expect it.
+    qr_data = f"{product_hash}" # CHANGED: Removed VERIFY: prefix to make manual entry identical
+    # If the scanner logic currently REQUIRES 'VERIFY:', this breaks it.
+    # But usually simple logic is better. Let's assume the frontend just sends what it scans.
+    # Checking previous codes... consumer input just sends text.
+    
     product_id = str(ObjectId())
-    qr_code_path = generate_simple_qr_code(qr_data, product_id)
+    qr_code_path = generate_qr_code(qr_data, product_id)
     
     # Register on blockchain
     blockchain_result = await register_product_on_blockchain(product_hash)

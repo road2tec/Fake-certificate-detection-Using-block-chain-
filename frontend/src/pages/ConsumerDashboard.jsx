@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { Routes, Route, Outlet } from 'react-router-dom'
-import { Html5Qrcode, Html5QrcodeScanner } from 'html5-qrcode'
+import { Routes, Route, Outlet, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { Html5Qrcode } from 'html5-qrcode'
 import Sidebar from '../components/Sidebar'
 import StatsCard from '../components/StatsCard'
 import productService from '../services/product.service'
@@ -11,28 +12,22 @@ import {
     CheckCircleIcon,
     XCircleIcon,
     CameraIcon,
-    StopIcon,
     ClockIcon,
-    ArrowUpTrayIcon,
-    PhotoIcon
+    PhotoIcon,
+    MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
 
-// Helper for safe error message extraction
-const getErrorMessage = (error) => {
-    const detail = error.response?.data?.detail
-    if (!detail) return error.message || 'An error occurred'
-    if (typeof detail === 'string') return detail
-    if (Array.isArray(detail)) return detail.map(err => err.msg).join(', ')
-    if (typeof detail === 'object') return JSON.stringify(detail)
-    return String(detail)
-}
+import { NoisyBackground, GradientBlur } from '../components/Decorations'
 
 // Layout
 const ConsumerLayout = () => {
     return (
-        <div className="min-h-screen bg-[#061e16]">
+        <div className="min-h-screen bg-primary-dark relative overflow-hidden">
+            <NoisyBackground />
+            <GradientBlur color="accent-pink" position="top-right" />
+            <GradientBlur color="indigo-500" position="bottom-left" />
             <Sidebar role="consumer" />
-            <main className="ml-64 p-8">
+            <main className="ml-64 p-10 lg:p-16 relative z-10">
                 <Outlet />
             </main>
         </div>
@@ -43,6 +38,7 @@ const ConsumerLayout = () => {
 const ConsumerOverview = () => {
     const [history, setHistory] = useState([])
     const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -62,77 +58,78 @@ const ConsumerOverview = () => {
     const fakeCount = history.filter(h => h.result === 'fake' || h.result === 'not_found').length
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold text-white mb-8">Consumer Dashboard</h1>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div className="flex items-center justify-between mb-12">
+                <div>
+                    <h1 className="text-4xl font-bold text-white tracking-tight mb-2">Consumer <span className="text-accent-pink">Portal</span></h1>
+                    <p className="text-gray-500 font-medium">Verified product authentication history and tools.</p>
+                </div>
+                <button
+                    onClick={() => navigate('/consumer/verify')}
+                    className="btn-primary flex items-center gap-3"
+                >
+                    <MagnifyingGlassIcon className="w-5 h-5" />
+                    Verify Product
+                </button>
+            </div>
 
             {/* Stats */}
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
                 <StatsCard
-                    title="Total Scans"
+                    title="Analyses Run"
                     value={history.length}
                     icon={QrCodeIcon}
-                    color="violet"
                 />
                 <StatsCard
-                    title="Authentic Products"
+                    title="Authentic"
                     value={authenticCount}
                     icon={CheckCircleIcon}
-                    color="emerald"
                 />
                 <StatsCard
-                    title="Fake Detected"
+                    title="Suspicious"
                     value={fakeCount}
                     icon={XCircleIcon}
-                    color="coral"
                 />
             </div>
 
-            {/* Quick Verify */}
-            <div className="p-6 rounded-2xl mb-8 bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h3 className="text-xl font-semibold mb-2">Verify a Product</h3>
-                        <p className="opacity-90">Scan a QR code or enter product hash to verify authenticity</p>
-                    </div>
-                    <a href="/consumer/verify" className="px-6 py-3 bg-white text-emerald-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
-                        Start Verification
-                    </a>
+            {/* Recent History */}
+            <div className="mb-12">
+                <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-2xl font-bold text-white tracking-tight">Recent Activity</h2>
+                    <button
+                        onClick={() => navigate('/consumer/history')}
+                        className="text-accent-pink hover:text-white font-bold text-sm transition-colors"
+                    >
+                        Full History →
+                    </button>
                 </div>
-            </div>
 
-            {/* Recent Verifications */}
-            <div>
-                <h2 className="text-xl font-semibold text-white mb-4">Recent Verifications</h2>
                 {loading ? (
-                    <div className="text-white">Loading...</div>
+                    <div className="flex justify-center py-20">
+                        <div className="w-12 h-12 border-4 border-accent-pink/20 border-t-accent-pink rounded-full animate-spin" />
+                    </div>
                 ) : history.length > 0 ? (
-                    <div className="space-y-3">
+                    <div className="grid gap-4">
                         {history.map((item) => (
                             <div
                                 key={item.id}
-                                className="p-4 rounded-2xl bg-[#0a2a1f] border border-emerald-500/20 flex items-center justify-between"
+                                className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-between hover:bg-white/[0.05] transition-all"
                             >
                                 <div className="flex items-center gap-4">
-                                    <div className={`p-3 rounded-xl ${item.result === 'authentic'
-                                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                                        : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${item.result === 'authentic'
+                                        ? 'bg-emerald-500/10 text-emerald-400'
+                                        : 'bg-red-500/10 text-red-400'
                                         }`}>
-                                        {item.result === 'authentic' ? (
-                                            <CheckCircleIcon className="w-6 h-6" />
-                                        ) : (
-                                            <XCircleIcon className="w-6 h-6" />
-                                        )}
+                                        {item.result === 'authentic' ? <CheckCircleIcon className="w-6 h-6" /> : <XCircleIcon className="w-6 h-6" />}
                                     </div>
                                     <div>
-                                        <p className="font-medium text-white">{item.product_name}</p>
-                                        <p className="text-sm text-gray-400">
-                                            {new Date(item.timestamp).toLocaleString()}
-                                        </p>
+                                        <p className="font-bold text-white tracking-tight">{item.product_name}</p>
+                                        <p className="text-xs text-gray-500 mt-1">{new Date(item.timestamp).toLocaleString()}</p>
                                     </div>
                                 </div>
-                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.result === 'authentic'
-                                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                                    : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${item.result === 'authentic'
+                                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                                    : 'bg-red-500/10 text-red-400 border-red-500/30'
                                     }`}>
                                     {item.result}
                                 </span>
@@ -140,13 +137,15 @@ const ConsumerOverview = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="p-8 rounded-2xl bg-[#0a2a1f] border border-emerald-500/20 text-center">
-                        <ShieldCheckIcon className="w-12 h-12 mx-auto text-emerald-500/30 mb-3" />
-                        <p className="text-gray-400">No verification history yet</p>
+                    <div className="p-20 rounded-[3rem] bg-white/[0.03] border border-white/5 text-center">
+                        <ShieldCheckIcon className="w-16 h-16 mx-auto text-gray-700 mb-6" />
+                        <h3 className="text-xl font-bold text-white mb-2">Secure History Empty</h3>
+                        <p className="text-gray-500 mb-8 max-w-sm mx-auto">Verified purchases will appear here after blockchain validation.</p>
+                        <button onClick={() => navigate('/consumer/verify')} className="btn-primary">Verify Now</button>
                     </div>
                 )}
             </div>
-        </div>
+        </motion.div>
     )
 }
 
@@ -155,337 +154,307 @@ const VerifyProductPage = () => {
     const [hashInput, setHashInput] = useState('')
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState(null)
-    const [error, setError] = useState(null)
     const [showScanner, setShowScanner] = useState(false)
-    const [dragActive, setDragActive] = useState(false)
+    const [scannerStatus, setScannerStatus] = useState('Idle')
     const fileInputRef = useRef(null)
+    const scannerRef = useRef(null)
 
     useEffect(() => {
-        let scanner = null
+        let html5QrCode;
         if (showScanner) {
-            scanner = new Html5QrcodeScanner(
-                "reader",
-                { fps: 10, qrbox: { width: 250, height: 250 } },
-                /* verbose= */ false
-            )
-            scanner.render(onScanSuccess, onScanFailure)
-        }
+            setScannerStatus('Initializing Camera...')
+            html5QrCode = new Html5Qrcode("reader")
+            scannerRef.current = html5QrCode
 
-        return () => {
-            if (scanner) {
-                scanner.clear().catch(error => console.error("Failed to clear scanner", error))
+            const config = {
+                fps: 15, // Higher FPS for better scanning
+                qrbox: { width: 300, height: 300 }, // Larger scan area
+                aspectRatio: 1.0
+            }
+
+            html5QrCode.start(
+                { facingMode: "environment" },
+                config,
+                onScanSuccess,
+                (errorMessage) => {
+                    // diff kinds of errors, mostly ignore frame errors
+                }
+            ).then(() => {
+                setScannerStatus('Scanning...')
+            }).catch(err => {
+                console.error("Error starting scanner", err)
+                setScannerStatus('Camera Error')
+                toast.error('Could not access camera. Please ensure permissions are granted.')
+                setShowScanner(false)
+            })
+
+            return () => {
+                if (html5QrCode && html5QrCode.isScanning) {
+                    html5QrCode.stop().then(() => html5QrCode.clear()).catch(err => console.error(err))
+                }
             }
         }
     }, [showScanner])
 
-    const onScanSuccess = (decodedText, decodedResult) => {
-        setShowScanner(false)
+    const onScanSuccess = (decodedText) => {
+        handleStopScanner()
         setHashInput(decodedText)
+        toast.success('QR Code Detected')
         handleVerify(decodedText)
     }
 
-    const onScanFailure = (error) => {
-        // console.warn(`Code scan error = ${error}`)
-    }
-
-    const handleDrag = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        if (e.type === "dragenter" || e.type === "dragover") {
-            setDragActive(true)
-        } else if (e.type === "dragleave") {
-            setDragActive(false)
+    const handleStopScanner = () => {
+        if (scannerRef.current) {
+            scannerRef.current.stop().then(() => {
+                scannerRef.current.clear()
+                setShowScanner(false)
+                setScannerStatus('Idle')
+            }).catch(err => {
+                console.error("Failed to stop scanner", err)
+                setShowScanner(false)
+            })
+        } else {
+            setShowScanner(false)
         }
     }
 
-    const handleDrop = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        setDragActive(false)
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            handleFile(e.dataTransfer.files[0])
-        }
-    }
+    const handleFileUpload = async (e) => {
+        const file = e.target.files[0]
+        if (!file) return
 
-    const handleChange = (e) => {
-        e.preventDefault()
-        if (e.target.files && e.target.files[0]) {
-            handleFile(e.target.files[0])
-        }
-    }
+        setScannerStatus('Analyzing Image...')
+        toast.loading('Analyzing QR Code...')
 
-    const handleFile = async (file) => {
-        if (!file.type.startsWith('image/')) {
-            toast.error('Please upload an image file')
-            return
+        // Method 1: Native BarcodeDetector
+        if ('BarcodeDetector' in window) {
+            try {
+                const barcodeDetector = new window.BarcodeDetector({ formats: ['qr_code'] });
+                const bitmaps = await window.createImageBitmap(file);
+                const barcodes = await barcodeDetector.detect(bitmaps);
+
+                if (barcodes.length > 0) {
+                    toast.dismiss();
+                    const hash = barcodes[0].rawValue;
+                    setHashInput(hash);
+                    toast.success('Code Read Successfully')
+                    handleVerify(hash);
+                    e.target.value = '';
+                    setScannerStatus('Idle');
+                    return;
+                }
+            } catch (err) {
+                console.warn("Native detector failed, trying fallback...", err);
+            }
         }
 
+        // Method 2: Fallback library
+        const html5QrCode = new Html5Qrcode("reader-hidden")
         try {
-            const html5QrCode = new Html5Qrcode("reader-hidden")
+            // Render image to hidden div (true) for better compatibility
             const decodedText = await html5QrCode.scanFile(file, true)
+            toast.dismiss()
             setHashInput(decodedText)
+            toast.success('Code Read Successfully')
             handleVerify(decodedText)
-            html5QrCode.clear()
         } catch (err) {
-            console.error(err)
-            const msg = "Could not find a valid QR code in this image"
+            toast.dismiss()
+            console.error("QR Scan Error (Fallback):", err)
+
+            // Helpful error messages
+            let msg = 'Could not read QR code.'
+            if (err?.toString().includes("No MultiFormat Readers")) {
+                msg = 'No QR code found in image. Try cropping it closely.'
+            }
             toast.error(msg)
-            setError(msg)
+        } finally {
+            setScannerStatus('Idle')
+            // Delay clearing slightly to ensure cleanup doesn't race
+            setTimeout(() => {
+                try { html5QrCode.clear() } catch (e) { }
+            }, 500)
+            e.target.value = ''
         }
     }
 
     const handleVerify = async (hash = null) => {
         let productHash = hash || hashInput.trim()
-        setError(null)
         setResult(null)
 
         if (!productHash) {
-            const msg = 'Please enter a product hash'
-            toast.error(msg)
-            setError(msg)
-            return
-        }
-
-        if (productHash.startsWith('VERIFY:')) {
-            productHash = productHash.replace('VERIFY:', '')
-        }
-
-        if (productHash.startsWith('0x')) {
-            productHash = productHash.substring(2)
-        }
-
-        if (productHash.length !== 64) {
-            const msg = `Invalid hash format. Hash should be 64 characters. (Current: ${productHash.length})`
-            toast.error(msg)
-            setError(msg)
+            toast.error('Product fingerprint required')
             return
         }
 
         setLoading(true)
-        setResult(null)
-
         try {
             const response = await productService.verifyProduct(productHash)
             setResult(response.data)
-
-            if (response.data.is_authentic) {
-                toast.success('Product is authentic!')
-            } else {
-                toast.error('Warning: Product may be fake!')
-            }
-        } catch (error) {
-            const msg = getErrorMessage(error)
-            toast.error(msg)
-            setError(msg)
+            if (response.data.is_authentic) toast.success('Blockchain verified: Authentic')
+            else toast.error('Security Alert: Invalid Record')
+        } catch (err) {
+            toast.error('Network error during verification')
         } finally {
             setLoading(false)
         }
     }
 
     return (
-        <div className="p-4">
-            <h1 className="text-3xl font-bold text-white mb-8">Verify Product</h1>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <h1 className="text-4xl font-bold text-white tracking-tight mb-12">Product <span className="text-accent-pink">Audit</span></h1>
 
-            <div className="grid lg:grid-cols-2 gap-8">
-                {/* Input Section */}
-                <div className="space-y-6">
-                    {/* Hash Input */}
-                    <div className="p-6 rounded-2xl bg-[#0a2a1f] border border-emerald-500/20">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Option 1: Enter Product Hash
-                        </h3>
-                        <div className="space-y-4">
-                            <textarea
-                                value={hashInput}
-                                onChange={(e) => setHashInput(e.target.value)}
-                                placeholder="Paste the 64-character product hash here..."
-                                className="w-full px-4 py-3 bg-[#061e16] border border-emerald-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all min-h-[100px] font-mono text-sm"
-                            />
+            {/* Hidden div for file scanning - Fixed off-screen but large enough for canvas rendering */}
+            <div id="reader-hidden" className="fixed -top-[10000px] left-0 w-[600px] h-[600px] opacity-0 pointer-events-none z-[-100]"></div>
 
-                            {error && (
-                                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-                                    {error}
+            <div className="grid lg:grid-cols-5 gap-12">
+                <div className="lg:col-span-3 space-y-8">
+                    {/* QR Scan Area */}
+                    {/* QR Scan Area */}
+                    <div className="relative overflow-hidden p-[1px] rounded-[2rem] bg-gradient-to-br from-white/10 to-white/0">
+                        <div className="absolute inset-0 bg-primary-dark/90 backdrop-blur-3xl z-0"></div>
+                        <div className="relative z-10 p-8 bg-primary-dark/40 rounded-[2rem] h-full flex flex-col">
+                            <div className="flex items-center justify-between mb-8">
+                                <h3 className="text-xl font-bold text-white flex items-center gap-3 tracking-tight">
+                                    <QrCodeIcon className="w-6 h-6 text-accent-pink" />
+                                    Optical Verification
+                                </h3>
+                                <div className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${scannerStatus === 'Scanning...' ? 'border-accent-pink/50 text-accent-pink bg-accent-pink/10 animate-pulse' : 'border-white/10 text-gray-500 bg-white/5'}`}>
+                                    {scannerStatus}
+                                </div>
+                            </div>
+
+                            {!showScanner ? (
+                                <div className="space-y-6 flex-1 flex flex-col justify-center">
+                                    <div
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="relative group cursor-pointer"
+                                    >
+                                        <div className="absolute inset-0 bg-accent-pink/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+                                        <div className="relative p-12 border-2 border-dashed border-white/10 rounded-3xl bg-white/[0.02] hover:bg-white/[0.04] transition-all text-center flex flex-col items-center justify-center gap-5 group-hover:border-accent-pink/30">
+                                            <input ref={fileInputRef} type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
+                                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-pink/20 to-purple-600/20 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-xl shadow-black/20">
+                                                <PhotoIcon className="w-8 h-8 text-accent-pink" />
+                                            </div>
+                                            <div>
+                                                <p className="text-base font-bold text-white mb-1">Upload QR Image</p>
+                                                <p className="text-xs text-gray-500 font-medium">Supports high-contrast PNG/JPG</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={() => setShowScanner(true)}
+                                        className="w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-3 group"
+                                    >
+                                        <CameraIcon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                                        Launch Live Scanner
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative aspect-square bg-black group">
+                                    <div id="reader" className="w-full h-full opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                                    <div className="absolute top-6 left-0 right-0 flex justify-center pointer-events-none">
+                                        <div className="px-4 py-2 bg-black/60 backdrop-blur-md rounded-full text-[10px] uppercase font-bold text-white tracking-widest border border-white/10 shadow-lg">
+                                            Align QR Code in Frame
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={handleStopScanner}
+                                        className="absolute bottom-6 left-6 right-6 py-3 bg-red-500/90 backdrop-blur-md text-white font-bold text-[10px] uppercase tracking-wider rounded-xl hover:bg-red-500 transition-all shadow-lg transform active:scale-95"
+                                    >
+                                        Stop Scanning
+                                    </button>
                                 </div>
                             )}
-
-                            <button
-                                onClick={() => handleVerify()}
-                                disabled={loading}
-                                className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 disabled:opacity-50 flex items-center justify-center gap-2"
-                            >
-                                {loading ? (
-                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                ) : (
-                                    <>
-                                        <ShieldCheckIcon className="w-5 h-5" />
-                                        Verify Product
-                                    </>
-                                )}
-                            </button>
                         </div>
                     </div>
 
-                    {/* QR Code Scanner */}
-                    <div className="p-6 rounded-2xl bg-[#0a2a1f] border border-emerald-500/20">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Option 2: Scan QR Code
-                        </h3>
+                    {/* Manual Input Fallback */}
+                    <div className="mt-8">
+                        <div className="flex items-center justify-center gap-4 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity" onClick={() => document.getElementById('manual-input').classList.toggle('hidden')}>
+                            <div className="h-px bg-white/10 flex-grow group-hover:bg-white/30 transition-colors"></div>
+                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest group-hover:text-gray-300 transition-colors">Or Enter Hash Manually</span>
+                            <div className="h-px bg-white/10 flex-grow group-hover:bg-white/30 transition-colors"></div>
+                        </div>
 
-                        {/* Hidden div for file scanning */}
-                        <div id="reader-hidden" className="hidden"></div>
-
-                        {!showScanner ? (
-                            <div className="space-y-4">
-                                {/* Drag & Drop Area */}
-                                <div
-                                    onDragEnter={handleDrag}
-                                    onDragLeave={handleDrag}
-                                    onDragOver={handleDrag}
-                                    onDrop={handleDrop}
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className={`relative p-8 border-2 border-dashed rounded-xl transition-all cursor-pointer flex flex-col items-center gap-3 text-center ${dragActive
-                                        ? 'border-emerald-500 bg-emerald-500/10'
-                                        : 'border-emerald-500/30 hover:border-emerald-500/50 hover:bg-emerald-500/5'
-                                        }`}
-                                >
-                                    <input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        className="hidden"
-                                        accept="image/*"
-                                        onChange={handleChange}
+                        <div id="manual-input" className="hidden mt-8">
+                            <div className="p-1 rounded-[2rem] bg-gradient-to-br from-white/5 to-white/0">
+                                <div className="p-6 rounded-[1.9rem] bg-primary-dark/50 border border-white/5 relative overflow-hidden">
+                                    <textarea
+                                        value={hashInput}
+                                        onChange={(e) => setHashInput(e.target.value)}
+                                        placeholder="Paste cryptographic fingerprint (0x...)"
+                                        className="w-full p-5 rounded-2xl bg-black/20 border border-white/10 text-white placeholder-gray-600 focus:border-accent-pink/50 focus:bg-black/40 outline-none transition-all font-mono text-xs leading-relaxed mb-4 resize-none h-28"
                                     />
-                                    <div className="w-16 h-16 rounded-full bg-[#061e16] flex items-center justify-center border border-emerald-500/30">
-                                        <PhotoIcon className="w-8 h-8 text-emerald-400" />
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-white mb-1">
-                                            Drop QR image here
-                                        </p>
-                                        <p className="text-sm text-gray-500">
-                                            or click to upload
-                                        </p>
-                                    </div>
-                                    <div className="absolute top-2 right-2">
-                                        <ArrowUpTrayIcon className="w-5 h-5 text-emerald-500/50" />
-                                    </div>
+                                    <button
+                                        onClick={() => handleVerify()}
+                                        disabled={loading}
+                                        className="w-full py-4 rounded-xl border border-white/10 hover:bg-white/5 text-gray-300 font-bold text-[10px] uppercase tracking-widest transition-all hover:text-white hover:border-white/20"
+                                    >
+                                        {loading ? 'Decrypting on Chain...' : 'Verify Hash'}
+                                    </button>
                                 </div>
-
-                                <div className="relative">
-                                    <div className="absolute inset-0 flex items-center">
-                                        <div className="w-full border-t border-emerald-500/10"></div>
-                                    </div>
-                                    <div className="relative flex justify-center text-sm">
-                                        <span className="px-2 bg-[#0a2a1f] text-gray-500">OR</span>
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={() => setShowScanner(true)}
-                                    className="w-full py-4 border border-emerald-500/30 rounded-xl hover:bg-emerald-500/5 transition-all text-emerald-400 font-medium flex items-center justify-center gap-2"
-                                >
-                                    <CameraIcon className="w-5 h-5" />
-                                    <span>Use Camera</span>
-                                </button>
                             </div>
-                        ) : (
-                            <div className="bg-white rounded-xl overflow-hidden p-2">
-                                <div id="reader" className="w-full"></div>
-                                <button
-                                    onClick={() => setShowScanner(false)}
-                                    className="mt-2 w-full py-2 bg-red-500 text-white rounded-lg flex items-center justify-center gap-2"
-                                >
-                                    <StopIcon className="w-5 h-5" /> Stop Camera
-                                </button>
-                            </div>
-                        )}
+                        </div>
                     </div>
                 </div>
 
-                {/* Result Section */}
-                {result && (
-                    <div className={`p-6 rounded-2xl border-2 ${result.is_authentic
-                        ? 'bg-emerald-500/10 border-emerald-500/30'
-                        : 'bg-red-500/10 border-red-500/30'
-                        }`}>
-                        <div className="text-center mb-6">
-                            <div className={`w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center ${result.is_authentic ? 'bg-emerald-500' : 'bg-red-500'
-                                }`}>
-                                {result.is_authentic ? (
-                                    <CheckCircleIcon className="w-14 h-14 text-white" />
-                                ) : (
-                                    <XCircleIcon className="w-14 h-14 text-white" />
-                                )}
+                <div className="lg:col-span-2">
+                    {result ? (
+                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className={`p-10 rounded-[2.5rem] text-center shadow-2xl h-full flex flex-col justify-center border-b-8 transition-all duration-500 relative overflow-hidden ${result.is_authentic ? 'bg-white border-emerald-500 text-primary-dark shadow-emerald-500/20' : 'bg-white border-red-500 text-primary-dark shadow-red-500/20'
+                            }`}>
+
+                            {/* Decorative background blob */}
+                            <div className={`absolute top-0 right-0 w-64 h-64 blur-3xl rounded-full opacity-10 translate-x-1/2 -translate-y-1/2 ${result.is_authentic ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
+
+                            <div className={`w-24 h-24 mx-auto mb-8 rounded-full flex items-center justify-center relative z-10 shadow-lg ${result.is_authentic ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white' : 'bg-gradient-to-br from-red-400 to-red-600 text-white'}`}>
+                                {result.is_authentic ? <CheckCircleIcon className="w-14 h-14" /> : <XCircleIcon className="w-14 h-14" />}
                             </div>
 
-                            <h2 className={`text-2xl font-bold ${result.is_authentic ? 'text-emerald-400' : 'text-red-400'
-                                }`}>
-                                {result.is_authentic ? 'AUTHENTIC PRODUCT' : 'WARNING: POTENTIAL FAKE'}
-                            </h2>
-                            <p className={`mt-2 ${result.is_authentic ? 'text-emerald-400/80' : 'text-red-400/80'
-                                }`}>
-                                {result.message}
-                            </p>
+                            <h2 className="text-3xl font-black mb-2 uppercase tracking-tight leading-none">{result.is_authentic ? 'Authentic' : 'Counterfeit'}</h2>
+                            <p className="text-gray-400 font-bold text-xs uppercase tracking-[0.2em] mb-12">{result.is_authentic ? 'Identity Verification Successful' : 'Security Protocol Alert'}</p>
+
+                            {result.product_details && (
+                                <div className="space-y-6 text-left p-8 bg-gray-50 rounded-[2rem] border border-gray-100 font-sans relative z-10">
+                                    <div className="flex items-start gap-4">
+                                        <div className="p-3 bg-white rounded-xl shadow-sm text-gray-400">
+                                            <ShieldCheckIcon className="w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-1">Authentic Producer</span>
+                                            <p className="font-bold text-lg text-gray-900 leading-tight">{result.product_details.manufacturer_name}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="h-px bg-gray-200 w-full"></div>
+
+                                    <div className="flex items-start gap-4">
+                                        <div className="p-3 bg-white rounded-xl shadow-sm text-gray-400">
+                                            <ClockIcon className="w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-1">Immutable Timestamp</span>
+                                            <p className="font-bold text-lg text-gray-900 leading-tight">{new Date(result.product_details.registered_at).toLocaleDateString()} <span className="text-sm text-gray-400 font-medium ml-1">{new Date(result.product_details.registered_at).toLocaleTimeString()}</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </motion.div>
+                    ) : (
+                        <div className="h-full rounded-[2.5rem] border-2 border-dashed border-white/5 flex flex-col items-center justify-center p-12 text-center bg-white/[0.01]">
+                            <div className="w-20 h-20 bg-white/[0.03] rounded-full flex items-center justify-center mb-8">
+                                <ShieldCheckIcon className="w-10 h-10 text-gray-600" />
+                            </div>
+                            <h3 className="text-xl font-bold text-white tracking-tight">Ready to Audit</h3>
+                            <p className="text-gray-500 text-sm mt-3 font-medium leading-relaxed max-w-xs mx-auto">Upload a QR code or scan manually to decrypt the product's blockchain ledger status.</p>
                         </div>
-
-                        {/* Product Details */}
-                        {result.product_details && (
-                            <div className="border-t border-emerald-500/20 pt-6 space-y-3">
-                                <h3 className="font-semibold text-white">Product Details</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <span className="text-sm text-gray-400">Product Name</span>
-                                        <p className="font-medium text-white">{result.product_details.product_name}</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-sm text-gray-400">Brand</span>
-                                        <p className="font-medium text-white">{result.product_details.brand}</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-sm text-gray-400">Manufacturer</span>
-                                        <p className="font-medium text-white">{result.product_details.manufacturer_name}</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-sm text-gray-400">Registered</span>
-                                        <p className="font-medium text-white">
-                                            {new Date(result.product_details.registered_at).toLocaleDateString()}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className={`mt-4 p-4 rounded-xl flex items-center gap-3 ${result.blockchain_verified
-                                    ? 'bg-emerald-500/20 border border-emerald-500/30'
-                                    : 'bg-amber-500/20 border border-amber-500/30'
-                                    }`}>
-                                    <div className={`p-2 rounded-lg ${result.blockchain_verified ? 'bg-emerald-500' : 'bg-amber-500'
-                                        }`}>
-                                        <ShieldCheckIcon className="w-5 h-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <p className={`font-semibold ${result.blockchain_verified ? 'text-emerald-400' : 'text-amber-400'
-                                            }`}>
-                                            {result.blockchain_verified
-                                                ? '✓ Verified on Blockchain'
-                                                : '⚠ Blockchain verification unavailable'
-                                            }
-                                        </p>
-                                        {result.blockchain_verified && (
-                                            <p className="text-sm text-emerald-400/70">
-                                                This product's authenticity is secured by blockchain technology
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
-        </div>
+        </motion.div>
     )
 }
 
-// History Page
+// History Page 
 const HistoryPage = () => {
     const [history, setHistory] = useState([])
     const [loading, setLoading] = useState(true)
@@ -493,74 +462,56 @@ const HistoryPage = () => {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const response = await productService.getVerificationHistory()
-                setHistory(response.data.items)
-            } catch (error) {
-                toast.error('Failed to load history')
-            } finally {
-                setLoading(false)
-            }
+                const res = await productService.getVerificationHistory()
+                setHistory(res.data.items)
+            } catch (err) { }
+            finally { setLoading(false) }
         }
         fetchHistory()
     }, [])
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold text-white mb-8">Verification History</h1>
-
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <h1 className="text-3xl font-bold text-white tracking-tight mb-8">Audit <span className="text-accent-pink">Logs</span></h1>
             {loading ? (
-                <div className="flex justify-center py-12">
-                    <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                <div className="flex justify-center py-20">
+                    <div className="w-10 h-10 border-2 border-accent-pink/20 border-t-accent-pink rounded-full animate-spin" />
                 </div>
             ) : history.length > 0 ? (
-                <div className="p-6 rounded-2xl bg-[#0a2a1f] border border-emerald-500/20 overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="border-b border-emerald-500/20">
-                                <th className="text-left py-3 px-4 text-gray-400 font-medium">Product</th>
-                                <th className="text-left py-3 px-4 text-gray-400 font-medium">Result</th>
-                                <th className="text-left py-3 px-4 text-gray-400 font-medium">Blockchain</th>
-                                <th className="text-left py-3 px-4 text-gray-400 font-medium">Date</th>
+                <div className="rounded-3xl bg-white/[0.02] border border-white/5 overflow-hidden">
+                    <table className="w-full text-left">
+                        <thead className="bg-white/[0.02] border-b border-white/5">
+                            <tr>
+                                <th className="px-6 py-4 text-[10px] font-bold uppercase text-gray-500 tracking-wider">Product</th>
+                                <th className="px-6 py-4 text-[10px] font-bold uppercase text-gray-500 tracking-wider">Result</th>
+                                <th className="px-6 py-4 text-[10px] font-bold uppercase text-gray-500 tracking-wider">Time</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {history.map((item) => (
-                                <tr key={item.id} className="border-b border-emerald-500/10 hover:bg-white/5 transition-colors">
-                                    <td className="py-3 px-4 text-white">{item.product_name}</td>
-                                    <td className="py-3 px-4">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.result === 'authentic'
-                                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                                            : 'bg-red-500/20 text-red-400 border border-red-500/30'
-                                            }`}>
+                        <tbody className="divide-y divide-white/5 text-sm">
+                            {history.map(item => (
+                                <tr key={item.id} className="hover:bg-white/[0.02] transition-colors">
+                                    <td className="px-6 py-4 text-gray-200 font-medium">{item.product_name}</td>
+                                    <td className="px-6 py-4">
+                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${item.result === 'authentic' ? 'text-emerald-400 bg-emerald-500/5 border-emerald-500/20' : 'text-red-400 bg-red-500/5 border-red-500/20'}`}>
                                             {item.result}
                                         </span>
                                     </td>
-                                    <td className="py-3 px-4">
-                                        {item.blockchain_verified ? (
-                                            <span className="text-emerald-400">✓ Verified</span>
-                                        ) : (
-                                            <span className="text-gray-500">—</span>
-                                        )}
-                                    </td>
-                                    <td className="py-3 px-4 text-gray-400">
-                                        {new Date(item.timestamp).toLocaleString()}
-                                    </td>
+                                    <td className="px-6 py-4 text-gray-500 text-xs tabular-nums">{new Date(item.timestamp).toLocaleDateString()}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
             ) : (
-                <div className="p-12 rounded-2xl bg-[#0a2a1f] border border-emerald-500/20 text-center">
-                    <ClockIcon className="w-16 h-16 mx-auto text-emerald-500/30 mb-4" />
-                    <p className="text-gray-400">No verification history yet</p>
+                <div className="p-16 text-center bg-white/[0.02] rounded-3xl border border-white/5">
+                    <ClockIcon className="w-12 h-12 mx-auto text-gray-700 mb-4" />
+                    <p className="text-gray-500 text-sm">No activity recorded</p>
                 </div>
             )}
-        </div>
+        </motion.div>
     )
 }
 
-// Main Export
 const ConsumerDashboard = () => {
     return (
         <Routes>

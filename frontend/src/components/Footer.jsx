@@ -1,122 +1,128 @@
 import { Link } from 'react-router-dom'
-import { ShieldCheckIcon } from '@heroicons/react/24/outline'
+import {
+    ShieldCheckIcon,
+    PaperAirplaneIcon,
+} from '@heroicons/react/24/outline'
 
 const Footer = () => {
     const currentYear = new Date().getFullYear()
 
-    const quickLinks = [
-        { label: 'Home', href: '/' },
-        { label: 'Features', href: '#features' },
-        { label: 'How It Works', href: '#how-it-works' },
-        { label: 'About', href: '#about' },
-    ]
-
-    const securityLinks = [
-        { label: 'Privacy Policy', href: '#' },
-        { label: 'Terms of Service', href: '#' },
-        { label: 'Security', href: '#' },
-        { label: 'Compliance', href: '#' },
-    ]
-
-    const contactInfo = [
-        { label: 'support@authenticheck.com', href: 'mailto:support@authenticheck.com' },
-        { label: '+1 (555) 123-4567', href: 'tel:+15551234567' },
-        { label: 'San Francisco, CA', href: '#' },
+    const sections = [
+        {
+            title: 'Platform',
+            links: [
+                { label: 'Core Features', href: '#features' },
+                { label: 'How it Works', href: '#how-it-works' },
+                { label: 'About Us', href: '#about' },
+                { label: 'Dashboard', href: '/login' },
+            ]
+        },
+        {
+            title: 'Solutions',
+            links: [
+                { label: 'Luxury Goods', href: '/' },
+                { label: 'Electronics', href: '/' },
+                { label: 'Medical Supplies', href: '/' },
+                { label: 'Verification', href: '#how-it-works' },
+            ]
+        },
+        {
+            title: 'Legal',
+            links: [
+                { label: 'Privacy Policy', href: '/' },
+                { label: 'Terms of Service', href: '/' },
+                { label: 'Cookie Policy', href: '/' },
+                { label: 'Security Audit', href: '/' },
+            ]
+        }
     ]
 
     return (
-        <footer className="bg-[#041510] border-t border-emerald-500/10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                    {/* Brand */}
-                    <div className="lg:col-span-1">
-                        <Link to="/" className="flex items-center gap-3 mb-6">
-                            <div className="p-2 rounded-xl bg-emerald-500/20 border border-emerald-500/30">
-                                <ShieldCheckIcon className="w-6 h-6 text-emerald-400" />
+        <footer className="bg-slate-900 pt-32 pb-16 relative overflow-hidden">
+            {/* Subtle background elements */}
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+            <div className="absolute -top-24 -left-24 w-96 h-96 bg-accent-pink/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div className="max-w-7xl mx-auto px-8 lg:px-12 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-24">
+                    {/* Brand Info - Spans 4 columns */}
+                    <div className="lg:col-span-4">
+                        <Link to="/" className="flex items-center gap-3 group mb-8">
+                            <div className="w-12 h-12 rounded-2xl bg-accent-pink text-white flex items-center justify-center shadow-2xl shadow-accent-pink/20 transition-all duration-500 group-hover:scale-110">
+                                <ShieldCheckIcon className="w-6 h-6" />
                             </div>
-                            <span className="text-xl font-bold text-white">
-                                Authenti<span className="text-emerald-400">Check</span>
+                            <span className="text-2xl font-black text-white tracking-tighter">
+                                Authenti<span className="text-accent-pink italic">Check</span>
                             </span>
                         </Link>
-                        <p className="text-gray-400 leading-relaxed mb-6">
-                            Fighting counterfeit products globally with blockchain-powered
-                            verification. Ensuring authenticity, building trust.
+                        <p className="text-white/40 text-base leading-relaxed mb-10 max-w-sm italic">
+                            The simple way to verify products. We use secure technology to protect brands and shoppers from fakes.
                         </p>
-                        {/* Social Links */}
-                        <div className="flex gap-3">
-                            {['X', 'in', 'Gh'].map((social, index) => (
-                                <a
-                                    key={index}
-                                    href="#"
-                                    className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-emerald-400 hover:border-emerald-500/30 hover:bg-emerald-500/10 transition-all text-sm font-bold"
-                                >
+                        <div className="flex gap-4">
+                            {['Twitter', 'LinkedIn'].map((social) => (
+                                <div key={social} className="px-5 py-2.5 rounded-full border border-white/5 bg-white/[0.02] text-white/30 hover:text-white hover:border-white/20 transition-all cursor-pointer font-bold text-[9px] uppercase tracking-widest">
                                     {social}
-                                </a>
+                                </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Quick Links */}
-                    <div>
-                        <h4 className="text-lg font-bold text-white mb-6">Quick Links</h4>
-                        <ul className="space-y-3">
-                            {quickLinks.map((link, index) => (
-                                <li key={index}>
-                                    <a
-                                        href={link.href}
-                                        className="text-gray-400 hover:text-emerald-400 transition-colors"
-                                    >
-                                        {link.label}
-                                    </a>
-                                </li>
-                            ))}
+                    {/* Navigation - Each spans 2 columns */}
+                    <div className="lg:col-span-2">
+                        <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] mb-10 opacity-20">Platform</h4>
+                        <ul className="space-y-5">
+                            <li><a href="#features" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">Core Features</a></li>
+                            <li><a href="#how-it-works" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">How it Works</a></li>
+                            <li><a href="#about" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">About Us</a></li>
+                            <li><Link to="/login" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">Dashboard</Link></li>
                         </ul>
                     </div>
 
-                    {/* Security */}
-                    <div>
-                        <h4 className="text-lg font-bold text-white mb-6">Security</h4>
-                        <ul className="space-y-3">
-                            {securityLinks.map((link, index) => (
-                                <li key={index}>
-                                    <a
-                                        href={link.href}
-                                        className="text-gray-400 hover:text-emerald-400 transition-colors"
-                                    >
-                                        {link.label}
-                                    </a>
-                                </li>
-                            ))}
+                    <div className="lg:col-span-2">
+                        <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] mb-10 opacity-20">Solutions</h4>
+                        <ul className="space-y-5">
+                            <li><a href="/" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">Luxury Goods</a></li>
+                            <li><a href="/" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">Electronics</a></li>
+                            <li><a href="/" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">Medical Supplies</a></li>
+                            <li><a href="#how-it-works" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">Verification</a></li>
                         </ul>
                     </div>
 
-                    {/* Contact */}
-                    <div>
-                        <h4 className="text-lg font-bold text-white mb-6">Contact Us</h4>
-                        <ul className="space-y-3">
-                            {contactInfo.map((item, index) => (
-                                <li key={index}>
-                                    <a
-                                        href={item.href}
-                                        className="text-gray-400 hover:text-emerald-400 transition-colors"
-                                    >
-                                        {item.label}
-                                    </a>
-                                </li>
-                            ))}
+                    <div className="lg:col-span-2">
+                        <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] mb-10 opacity-20">Legal</h4>
+                        <ul className="space-y-5">
+                            <li><a href="/" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">Privacy Policy</a></li>
+                            <li><a href="/" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">Terms of Service</a></li>
+                            <li><a href="/" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">Cookie Policy</a></li>
+                            <li><a href="/" className="text-white/40 hover:text-accent-pink text-sm font-medium transition-colors">Security Audit</a></li>
                         </ul>
+                    </div>
+
+                    {/* Newsletter - Spans 2 columns */}
+                    <div className="lg:col-span-2 flex flex-col items-start">
+                        <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] mb-10 opacity-20">Newsletter</h4>
+                        <div className="relative w-full group">
+                            <input
+                                type="text"
+                                placeholder="Email address"
+                                className="w-full bg-white/[0.02] border border-white/5 rounded-2xl pl-6 pr-14 py-4 text-sm text-white focus:outline-none focus:border-accent-pink/30 transition-all"
+                            />
+                            <button className="absolute right-1.5 top-1.5 w-10 h-10 rounded-xl bg-accent-pink text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent-pink/20">
+                                <PaperAirplaneIcon className="w-4 h-4 -rotate-45" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                {/* Bottom Bar */}
-                <div className="mt-12 pt-8 border-t border-emerald-500/10 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-gray-500 text-sm">
-                        © {currentYear} AuthentiCheck. All rights reserved.
+                <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+                    <p className="text-[10px] font-black text-white/10 uppercase tracking-[0.3em]">
+                        © {currentYear} AuthentiCheck Identity. Simplified Security.
                     </p>
-                    <div className="flex items-center gap-6 text-sm text-gray-500">
-                        <a href="#" className="hover:text-emerald-400 transition-colors">Privacy</a>
-                        <a href="#" className="hover:text-emerald-400 transition-colors">Terms</a>
-                        <a href="#" className="hover:text-emerald-400 transition-colors">Cookies</a>
+                    <div className="flex items-center gap-10">
+                        <div className="flex items-center gap-3 text-white/20 text-[9px] font-black uppercase tracking-widest">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                            System Live
+                        </div>
                     </div>
                 </div>
             </div>

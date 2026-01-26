@@ -1,510 +1,422 @@
-import { motion } from 'framer-motion'
+import { motion, useScroll, useSpring } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { NoisyBackground, GradientBlur } from '../components/Decorations'
 import {
     ShieldCheckIcon,
-    QrCodeIcon,
-    CubeTransparentIcon,
-    UserGroupIcon,
-    CheckBadgeIcon,
+    ArrowPathIcon,
     BoltIcon,
-    DevicePhoneMobileIcon,
-    GlobeAltIcon,
-    LockClosedIcon,
-    ChartBarIcon,
+    UserGroupIcon,
     ArrowRightIcon,
-    StarIcon,
+    QrCodeIcon,
+    MagnifyingGlassIcon,
+    DocumentCheckIcon,
+    SparklesIcon,
+    GlobeAltIcon,
+    FingerPrintIcon,
+    CloudArrowUpIcon,
+    ShieldExclamationIcon,
+    CpuChipIcon,
+    LockClosedIcon,
+    CheckBadgeIcon,
+    WalletIcon,
+    ArrowsRightLeftIcon,
+    KeyIcon,
 } from '@heroicons/react/24/outline'
-import { ShieldCheckIcon as ShieldSolid, CheckBadgeIcon as CheckBadgeSolid } from '@heroicons/react/24/solid'
 
 const LandingPage = () => {
+    const { scrollYProgress } = useScroll();
+    const scaleX = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
+
+    const categories = [
+        { title: 'Luxury Skincare', image: '/cat_cosmetics_real.png', count: '1.2k Secured', tag: 'Beauty' },
+        { title: 'Fine Jewelry', image: '/cat_jewelry_real.png', count: '850+ Verified', tag: 'Luxury' },
+        { title: 'Medical Grade', image: '/cat_medicine_real.png', count: '10k+ Protected', tag: 'Health' },
+        { title: 'Organic Produce', image: '/cat_produce_real.png', count: '5k+ Tracked', tag: 'Agro' },
+    ]
+
     const features = [
         {
             icon: ShieldCheckIcon,
-            title: 'Counterfeit Detection',
-            description: 'Advanced blockchain verification instantly identifies fake products with 99.9% accuracy.',
+            title: 'Immutable Blockchain Core',
+            description: 'Every product unit is anchored to a decentralized Ethereum-based ledger. Once recorded, the data is permanent and tamper-proof.',
+            details: ['Decentralized nodes', 'Zero downtime', 'Cryptographic hashing']
         },
         {
-            icon: QrCodeIcon,
-            title: 'QR Code Verification',
-            description: 'Scan unique QR codes to access complete product history and authenticity reports.',
+            icon: FingerPrintIcon,
+            title: 'Unit-Level QR Identification',
+            description: 'Mass replication is impossible. Every single physical unit receives a unique digital signature that cannot be cloned.',
+            details: ['Non-reproducible codes', 'Anti-cloning technology', 'Scan-limit alerts']
         },
         {
-            icon: CubeTransparentIcon,
-            title: 'Blockchain Security',
-            description: 'Immutable records on blockchain ensure product data cannot be tampered with.',
-        },
-        {
-            icon: DevicePhoneMobileIcon,
-            title: 'Mobile Ready',
-            description: 'Verify products on-the-go with our mobile-optimized scanning technology.',
-        },
-        {
-            icon: GlobeAltIcon,
-            title: 'Global Network',
-            description: 'Connected to worldwide brand databases for international product verification.',
-        },
-        {
-            icon: ChartBarIcon,
-            title: 'Analytics Dashboard',
-            description: 'Track verification statistics and gain insights into product authenticity trends.',
+            icon: CpuChipIcon,
+            title: 'Smart Execution Protocol',
+            description: 'Automated smart contracts manage ownership and status updates without human intervention, ensuring total integrity.',
+            details: ['Auto-verification', 'Secure hand-offs', 'Instant resolution']
         },
     ]
 
     const steps = [
         {
-            number: '01',
-            title: 'Manufacturer Registers',
-            description: 'Brands register their products on the blockchain with unique identifiers.',
-            icon: '🏭',
+            icon: CloudArrowUpIcon,
+            title: 'Manufacturer Upload',
+            description: 'Companies register their original products onto our secure blockchain system to create a permanent record.',
         },
         {
-            number: '02',
-            title: 'QR Code Generated',
-            description: 'Each product receives a unique, tamper-proof QR code linked to blockchain.',
-            icon: '📱',
+            icon: ArrowsRightLeftIcon,
+            title: 'Inventory Tracking',
+            description: 'The system tracks the product movement through the supply chain to ensure nothing is swapped or cloned.',
         },
         {
-            number: '03',
-            title: 'Consumer Scans',
-            description: 'Customers scan the QR code using our app or website.',
-            icon: '🔍',
-        },
-        {
-            number: '04',
+            icon: QrCodeIcon,
             title: 'Instant Verification',
-            description: 'Get real-time authenticity confirmation with complete product history.',
-            icon: '✅',
+            description: 'Customers scan the QR code using their phone to instantly see if the product is authentic or fake.',
         },
     ]
 
-    const testimonials = [
-        {
-            name: 'Sarah Johnson',
-            role: 'Pharmaceutical Executive',
-            company: 'MediCare Plus',
-            content: 'AuthentiCheck has reduced counterfeit incidents by 95%. Our customers trust our products like never before.',
-            rating: 5,
-        },
-        {
-            name: 'Michael Chen',
-            role: 'Brand Protection Manager',
-            company: 'LuxeStyle Fashion',
-            content: 'The blockchain verification gives our customers confidence. Fake products are instantly identified.',
-            rating: 5,
-        },
-        {
-            name: 'Emily Rodriguez',
-            role: 'Quality Assurance Director',
-            company: 'TechGiant Electronics',
-            content: 'Implementation was seamless. We now have complete visibility into our supply chain authenticity.',
-            rating: 5,
-        },
-    ]
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    }
 
-    const stats = [
-        { value: '10M+', label: 'Products Verified' },
-        { value: '500+', label: 'Trusted Brands' },
-        { value: '50+', label: 'Countries' },
-        { value: '99.9%', label: 'Accuracy Rate' },
-    ]
-
-    const trustedBy = ['Pharmaceutical', 'Electronics', 'Fashion', 'Cosmetics', 'Automotive', 'Food & Beverage']
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+    }
 
     return (
-        <div className="min-h-screen bg-[#061e16]">
+        <div className="min-h-screen bg-white relative overflow-hidden font-sans selection:bg-accent-pink/20 selection:text-slate-900">
+            <NoisyBackground />
             <Navbar />
 
-            {/* Hero Section with Background Image */}
-            <section className="relative min-h-screen flex items-center">
-                {/* Fixed Background Image */}
+            {/* Scroll Progress Indicator */}
+            <motion.div className="fixed top-0 left-0 right-0 h-1 bg-accent-pink z-[60] origin-left" style={{ scaleX }} />
+
+            {/* --- SECTION 1: HERO --- */}
+            <section className="relative min-h-[110vh] flex flex-col items-center justify-between overflow-hidden bg-slate-900">
                 <div
-                    className="absolute inset-0 z-0"
-                    style={{
-                        backgroundImage: 'url(/hero-bg.png)',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
+                    className="absolute inset-0 z-0 bg-cover bg-center opacity-40 blur-[1px] grayscale-[0.2]"
+                    style={{ backgroundImage: 'url(/hero_scan_real.png)' }}
                 >
-                    {/* Dark Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#061e16] via-[#061e16]/90 to-[#061e16]/70"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
                 </div>
 
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        {/* Left Content */}
+                <div className="relative z-10 max-w-7xl mx-auto px-8 lg:px-12 w-full pt-44 pb-20 flex-grow flex flex-col justify-center">
+                    <div className="max-w-4xl">
                         <motion.div
-                            initial={{ opacity: 0, x: -50 }}
+                            initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.8 }}
+                            className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-12 backdrop-blur-md"
                         >
-                            {/* Badge */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 }}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-6"
-                            >
-                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                <span className="text-emerald-400 font-medium text-sm">Blockchain-Powered Security</span>
-                            </motion.div>
-
-                            <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                                Verify Product
-                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
-                                    Authenticity
-                                </span>
-                            </h1>
-
-                            <p className="text-xl text-gray-300 mb-8 leading-relaxed max-w-xl">
-                                Protect your brand and customers from counterfeit products with our blockchain-powered QR code verification system.
-                            </p>
-
-                            {/* CTA Buttons */}
-                            <div className="flex flex-wrap gap-4 mb-12">
-                                <Link
-                                    to="/signup"
-                                    className="group px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-lg hover:from-emerald-600 hover:to-teal-600 transition-all shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 flex items-center gap-2"
-                                >
-                                    Get Started Free
-                                    <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                </Link>
-                                <Link
-                                    to="/login"
-                                    className="px-8 py-4 rounded-xl bg-white/10 backdrop-blur border border-white/20 text-white font-semibold hover:bg-white/20 transition-all"
-                                >
-                                    Sign In
-                                </Link>
-                            </div>
-
-                            {/* Stats */}
-                            <div className="flex flex-wrap gap-8">
-                                {stats.slice(0, 3).map((stat, index) => (
-                                    <motion.div
-                                        key={index}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.5 + index * 0.1 }}
-                                    >
-                                        <div className="text-3xl font-bold text-emerald-400">{stat.value}</div>
-                                        <div className="text-sm text-gray-400">{stat.label}</div>
-                                    </motion.div>
-                                ))}
-                            </div>
+                            <SparklesIcon className="w-4 h-4 text-accent-pink" />
+                            <span className="text-white/40 font-bold text-[10px] uppercase tracking-[0.4em]">Integrated Trust Systems v2.1</span>
                         </motion.div>
 
-                        {/* Right - Feature Cards */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 50 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.8, delay: 0.3 }}
-                            className="hidden lg:block"
+                        <motion.h1
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="text-6xl lg:text-[8.5rem] font-black text-white mb-10 leading-[0.85] tracking-tighter"
                         >
-                            <div className="grid grid-cols-2 gap-4">
-                                {[
-                                    { icon: '🔍', title: 'Instant Scan', desc: 'Verify in seconds' },
-                                    { icon: '🛡️', title: 'Blockchain', desc: 'Secure & immutable' },
-                                    { icon: '📱', title: 'Mobile Ready', desc: 'Scan anywhere' },
-                                    { icon: '✅', title: '99.9% Accurate', desc: 'Trusted results' },
-                                ].map((item, index) => (
-                                    <motion.div
-                                        key={index}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.5 + index * 0.1 }}
-                                        whileHover={{ scale: 1.05, y: -5 }}
-                                        className="p-6 bg-[#0a2a1f]/80 backdrop-blur-xl rounded-2xl border border-emerald-500/20 hover:border-emerald-500/40 transition-all"
-                                    >
-                                        <span className="text-3xl mb-3 block">{item.icon}</span>
-                                        <h3 className="text-white font-bold mb-1">{item.title}</h3>
-                                        <p className="text-gray-400 text-sm">{item.desc}</p>
-                                    </motion.div>
-                                ))}
-                            </div>
+                            Authentic. <br />
+                            <span className="hero-text-gradient italic">Without Doubt.</span>
+                        </motion.h1>
+
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="text-xl text-white/40 mb-16 leading-relaxed max-w-2xl font-medium"
+                        >
+                            We provide the digital bridge between physical assets and consumer trust. Deploying military-grade blockchain verification to the global marketplace with absolute transparency.
+                        </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.4 }}
+                            className="flex flex-wrap gap-8"
+                        >
+                            <Link to="/signup?role=consumer" className="btn-primary flex items-center gap-4 px-12 py-6 rounded-[2rem] shadow-none hover:shadow-2xl hover:shadow-accent-pink/20 transition-all font-black tracking-widest text-[11px]">
+                                START VERIFYING
+                                <ArrowRightIcon className="w-4 h-4" />
+                            </Link>
+                            <Link to="/signup?role=manufacturer" className="btn-outline border border-white/10 hover:bg-white/5 transition-all px-12 py-6 rounded-[2rem] font-black tracking-widest text-[11px]">
+                                PRODUCER PORTAL
+                            </Link>
                         </motion.div>
                     </div>
                 </div>
 
-                {/* Scroll Indicator */}
-                <motion.div
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
-                >
-                    <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-2">
-                        <motion.div
-                            animate={{ y: [0, 12, 0] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            className="w-1.5 h-3 bg-emerald-400 rounded-full"
-                        />
-                    </div>
-                </motion.div>
-            </section>
-
-            {/* Trusted By */}
-            <section className="py-16 bg-[#041510] border-y border-emerald-500/10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <p className="text-center text-gray-500 mb-8 text-sm uppercase tracking-wider">Trusted by industry leaders</p>
-                    <div className="flex flex-wrap justify-center gap-8 md:gap-16">
-                        {trustedBy.map((industry, index) => (
-                            <motion.span
-                                key={index}
-                                initial={{ opacity: 0 }}
-                                whileInView={{ opacity: 1 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="text-gray-400 font-medium hover:text-emerald-400 transition-colors cursor-default"
-                            >
-                                {industry}
-                            </motion.span>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Features Section */}
-            <section id="features" className="py-24 bg-[#061e16]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-center mb-16"
-                    >
-                        <span className="text-emerald-400 font-semibold text-sm uppercase tracking-wider">Features</span>
-                        <h2 className="text-4xl lg:text-5xl font-bold text-white mt-2 mb-4">
-                            Powerful <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Features</span>
-                        </h2>
-                        <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-                            Everything you need to protect your products and customers from counterfeits.
-                        </p>
-                    </motion.div>
-
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {features.map((feature, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                whileHover={{ y: -5 }}
-                                className="p-8 bg-[#0a2a1f] rounded-2xl border border-emerald-500/10 hover:border-emerald-500/30 transition-all group"
-                            >
-                                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                    <feature.icon className="w-7 h-7 text-emerald-400" />
-                                </div>
-                                <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                                <p className="text-gray-400 leading-relaxed">{feature.description}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* How It Works */}
-            <section id="how-it-works" className="py-24 bg-[#041510]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-center mb-16"
-                    >
-                        <span className="text-emerald-400 font-semibold text-sm uppercase tracking-wider">Process</span>
-                        <h2 className="text-4xl lg:text-5xl font-bold text-white mt-2 mb-4">
-                            How It <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Works</span>
-                        </h2>
-                        <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-                            Simple four-step process to verify any product's authenticity.
-                        </p>
-                    </motion.div>
-
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {steps.map((step, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                className="relative p-8 bg-[#0a2a1f] rounded-2xl border border-emerald-500/10 hover:border-emerald-500/30 transition-all text-center"
-                            >
-                                {/* Step Number */}
-                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full text-white font-bold text-sm">
-                                    Step {step.number}
-                                </div>
-
-                                <span className="text-4xl block mt-4 mb-4">{step.icon}</span>
-                                <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
-                                <p className="text-gray-400 text-sm">{step.description}</p>
-
-                                {/* Connector Line */}
-                                {index < steps.length - 1 && (
-                                    <div className="hidden lg:block absolute top-1/2 -right-3 w-6 border-t-2 border-dashed border-emerald-500/30"></div>
-                                )}
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Testimonials */}
-            <section className="py-24 bg-[#061e16]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-center mb-16"
-                    >
-                        <span className="text-emerald-400 font-semibold text-sm uppercase tracking-wider">Testimonials</span>
-                        <h2 className="text-4xl lg:text-5xl font-bold text-white mt-2 mb-4">
-                            What Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Users Say</span>
-                        </h2>
-                    </motion.div>
-
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {testimonials.map((testimonial, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                className="p-8 bg-[#0a2a1f] rounded-2xl border border-emerald-500/10"
-                            >
-                                {/* Stars */}
-                                <div className="flex gap-1 mb-4">
-                                    {Array(testimonial.rating).fill(0).map((_, i) => (
-                                        <StarIcon key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />
-                                    ))}
-                                </div>
-
-                                <p className="text-gray-300 mb-6 leading-relaxed">"{testimonial.content}"</p>
-
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold">
-                                        {testimonial.name.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <div className="text-white font-semibold">{testimonial.name}</div>
-                                        <div className="text-gray-400 text-sm">{testimonial.role}</div>
-                                        <div className="text-emerald-400 text-sm">{testimonial.company}</div>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* About Section */}
-            <section id="about" className="py-24 bg-[#041510]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-16 items-center">
-                        <motion.div
-                            initial={{ opacity: 0, x: -30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                        >
-                            <span className="text-emerald-400 font-semibold text-sm uppercase tracking-wider">About Us</span>
-                            <h2 className="text-4xl lg:text-5xl font-bold text-white mt-2 mb-6">
-                                About <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">AuthentiCheck</span>
-                            </h2>
-                            <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                                We're on a mission to eliminate counterfeit products worldwide. Using cutting-edge blockchain technology and QR code verification, we help brands protect their reputation and customers ensure product authenticity.
-                            </p>
-                            <p className="text-gray-400 leading-relaxed mb-8">
-                                Founded by a team of security experts and blockchain enthusiasts, AuthentiCheck provides an unbreakable chain of trust from manufacturer to consumer.
-                            </p>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                {stats.map((stat, index) => (
-                                    <div key={index} className="p-4 bg-[#0a2a1f] rounded-xl border border-emerald-500/10">
-                                        <div className="text-2xl font-bold text-emerald-400">{stat.value}</div>
-                                        <div className="text-gray-400 text-sm">{stat.label}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, x: 30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="grid grid-cols-2 gap-4"
-                        >
+                {/* Sub-Hero Trust Bar */}
+                <div className="relative w-full border-t border-white/5 bg-slate-900/40 backdrop-blur-xl py-12 z-10">
+                    <div className="max-w-7xl mx-auto px-12 flex flex-wrap items-center justify-between gap-12">
+                        <div className="flex gap-16 lg:gap-32">
                             {[
-                                { icon: ShieldSolid, title: 'Security First', desc: 'Enterprise-grade blockchain security' },
-                                { icon: BoltIcon, title: 'Lightning Fast', desc: 'Instant verification results' },
-                                { icon: GlobeAltIcon, title: 'Global Reach', desc: '50+ countries worldwide' },
-                                { icon: UserGroupIcon, title: '24/7 Support', desc: 'Dedicated customer success' },
-                            ].map((item, index) => (
+                                { label: 'Audit Trail', value: '100% Immutable' },
+                                { label: 'Active Scans', value: '12k+ Units' },
+                                { label: 'Uptime', value: '99.99%' },
+                            ].map((stat, i) => (
+                                <div key={i} className="min-w-[120px]">
+                                    <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em] mb-3">{stat.label}</p>
+                                    <p className="text-xl font-black text-white/80 tracking-tight whitespace-nowrap">{stat.value}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="hidden xl:flex items-center gap-10 border-l border-white/5 pl-12">
+                            <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.4em]">Ecosystem Trust:</span>
+                            <div className="flex gap-8 opacity-40 grayscale hover:grayscale-0 transition-all duration-500 cursor-pointer">
+                                <LockClosedIcon className="w-6 h-6 text-white" />
+                                <GlobeAltIcon className="w-6 h-6 text-white" />
+                                <CpuChipIcon className="w-6 h-6 text-white" />
+                                <CheckBadgeIcon className="w-6 h-6 text-white" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* --- SECTION 5: INDUSTRIES (Moved) --- */}
+            <section className="py-48 bg-slate-50 border-y border-slate-100">
+                <div className="max-w-7xl mx-auto px-12 text-center mb-32">
+                    <p className="text-[11px] font-black text-accent-pink uppercase tracking-[0.5em] mb-6">MARKET VERTICALS</p>
+                    <h2 className="text-5xl lg:text-7xl font-black text-slate-900 tracking-tighter">High-Value Networks.</h2>
+                </div>
+                <div className="max-w-7xl mx-auto px-12">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+                        {categories.map((cat, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                                whileHover={{ y: -15 }}
+                                className="group cursor-pointer"
+                            >
+                                <div className="relative aspect-[10/14] overflow-hidden rounded-[4.5rem] mb-10 shadow-2xl shadow-slate-200 group-hover:shadow-accent-pink/10 transition-all duration-700">
+                                    <img src={cat.image} className="w-full h-full object-cover grayscale-[0.4] transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-110" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent opacity-90 lg:opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                                    <div className="absolute bottom-12 left-12 text-white translate-y-8 lg:opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700">
+                                        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-accent-pink mb-4">{cat.tag}</p>
+                                        <p className="text-3xl font-black tracking-tighter leading-none mb-2">{cat.title}</p>
+                                        <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">{cat.count}</p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* --- SECTION 2: FEATURES --- */}
+            <section id="features" className="py-48 bg-white relative">
+                <div className="max-w-7xl mx-auto px-12">
+                    <div className="flex flex-col lg:flex-row gap-20 items-end justify-between mb-32">
+                        <div className="max-w-3xl">
+                            <motion.p
+                                initial={{ opacity: 0, y: 10 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                className="text-[11px] font-black text-accent-pink uppercase tracking-[0.5em] mb-8"
+                            >
+                                THE PROTOCOL
+                            </motion.p>
+                            <motion.h2
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.1 }}
+                                className="text-6xl lg:text-[7.5rem] font-black text-slate-900 tracking-tighter mb-10 leading-[0.9]"
+                            >
+                                Security <br /> <span className="text-slate-200 uppercase">Core.</span>
+                            </motion.h2>
+                            <motion.p
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.2 }}
+                                className="text-slate-500 font-medium text-xl leading-relaxed max-w-2xl"
+                            >
+                                Our multi-layered defense system combines decentralization with high-speed optical scanning to protect every single asset in your supply chain.
+                            </motion.p>
+                        </div>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+                            whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                            viewport={{ once: true }}
+                            className="hidden lg:block pb-10 text-slate-100"
+                        >
+                            <CheckBadgeIcon className="w-40 h-40" />
+                        </motion.div>
+                    </div>
+
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        className="grid lg:grid-cols-3 gap-10"
+                    >
+                        {features.map((f, i) => (
+                            <motion.div
+                                key={i}
+                                variants={itemVariants}
+                                className="group p-12 rounded-[4rem] bg-slate-50 border border-slate-100 hover:border-accent-pink/30 hover:bg-white transition-all duration-700 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.06)]"
+                            >
+                                <div className="w-20 h-20 rounded-3xl bg-white shadow-xl shadow-slate-200/50 flex items-center justify-center text-slate-900 mb-12 group-hover:bg-accent-pink group-hover:text-white group-hover:scale-110 transition-all duration-700">
+                                    <f.icon className="w-9 h-9" />
+                                </div>
+                                <h3 className="text-3xl font-black text-slate-900 mb-6 tracking-tight leading-none">{f.title}</h3>
+                                <p className="text-slate-500 font-medium leading-relaxed mb-12 text-lg">{f.description}</p>
+                                <ul className="space-y-4 pt-10 border-t border-slate-100">
+                                    {f.details.map((detail, idx) => (
+                                        <li key={idx} className="flex items-center gap-4 text-[11px] font-black text-slate-400 tracking-widest uppercase">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-accent-pink shadow-[0_0_10px_rgba(219,39,119,0.5)]"></div>
+                                            {detail}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* --- SECTION 3: HOW IT WORKS --- */}
+            {/* --- SECTION 3: HOW IT WORKS --- */}
+            <section id="how-it-works" className="py-48 bg-slate-900 relative">
+                <NoisyBackground />
+                <GradientBlur color="indigo-500" position="top-left" />
+
+                <div className="max-w-7xl mx-auto px-12 relative z-10">
+                    <div className="text-center max-w-4xl mx-auto mb-40">
+                        <motion.p
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="text-[11px] font-black text-accent-pink uppercase tracking-[0.6em] mb-10"
+                        >
+                            THE PROCESS
+                        </motion.p>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="text-6xl lg:text-[8.5rem] font-black text-white tracking-tighter mb-10 leading-[0.85]"
+                        >
+                            How It <br /> <span className="hero-text-gradient italic text-white/90">Works.</span>
+                        </motion.h2>
+                    </div>
+
+                    <div className="relative">
+                        <div className="grid lg:grid-cols-3 gap-16 relative z-10">
+                            {steps.map((step, i) => (
                                 <motion.div
-                                    key={index}
-                                    whileHover={{ scale: 1.05 }}
-                                    className="p-6 bg-[#0a2a1f] rounded-2xl border border-emerald-500/10"
+                                    key={i}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.2 }}
+                                    className="group relative"
                                 >
-                                    <item.icon className="w-10 h-10 text-emerald-400 mb-4" />
-                                    <h3 className="text-white font-bold mb-1">{item.title}</h3>
-                                    <p className="text-gray-400 text-sm">{item.desc}</p>
+                                    <div className="p-14 rounded-[4.5rem] bg-white/[0.02] border border-white/5 hover:border-accent-pink/30 transition-all duration-700 group-hover:bg-white/[0.04]">
+                                        <div className="w-24 h-24 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-accent-pink mb-14 group-hover:bg-accent-pink group-hover:text-white group-hover:scale-110 transition-all duration-1000 shadow-2xl">
+                                            <step.icon className="w-10 h-10" />
+                                        </div>
+
+                                        <div className="flex items-center gap-6 mb-8">
+                                            <span className="text-4xl font-black text-white/10 italic">0{i + 1}</span>
+                                            <h4 className="text-3xl font-black text-white tracking-tight leading-none uppercase">{step.title}</h4>
+                                        </div>
+
+                                        <p className="text-white/40 font-medium leading-relaxed text-lg italic">
+                                            {step.description}
+                                        </p>
+                                    </div>
                                 </motion.div>
                             ))}
-                        </motion.div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* CTA Section */}
-            <section className="py-24 bg-[#061e16] relative overflow-hidden">
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-emerald-500 rounded-full"></div>
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-emerald-500 rounded-full"></div>
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-emerald-500 rounded-full"></div>
-                </div>
-
-                <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-500/30 mb-6">
-                            <CheckBadgeSolid className="w-5 h-5 text-emerald-400" />
-                            <span className="text-emerald-400 font-medium">Join 500+ Businesses</span>
-                        </span>
-
-                        <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-                            Ready to Protect Your
-                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
-                                Products?
-                            </span>
-                        </h2>
-
-                        <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-                            Start verifying product authenticity today. Get set up in minutes with our easy integration.
-                        </p>
-
-                        <div className="flex flex-wrap justify-center gap-4">
-                            <Link
-                                to="/signup?role=manufacturer"
-                                className="group px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-lg hover:from-emerald-600 hover:to-teal-600 transition-all shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 flex items-center gap-2"
+            {/* --- SECTION 4: ABOUT US --- */}
+            <section id="about" className="py-48 bg-white relative overflow-hidden">
+                <GradientBlur color="accent-pink" position="bottom-right" />
+                <div className="max-w-7xl mx-auto px-12">
+                    <div className="grid lg:grid-cols-2 gap-40 items-center">
+                        <motion.div
+                            initial={{ opacity: 0, x: -50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                        >
+                            <div className="inline-block px-5 py-2 rounded-xl bg-slate-900 text-white font-black text-[10px] uppercase tracking-[0.5em] mb-12">AUTHENTICHECK IDENTITY</div>
+                            <motion.h2
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.1 }}
+                                className="text-6xl lg:text-[8rem] font-black text-slate-900 tracking-tighter mb-12 leading-[0.85]"
                             >
-                                Register as Manufacturer
-                                <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </Link>
-                            <Link
-                                to="/signup?role=consumer"
-                                className="px-8 py-4 rounded-xl bg-white/10 backdrop-blur border border-white/20 text-white font-semibold hover:bg-white/20 transition-all"
+                                Restoring <br /> <span className="text-slate-200 uppercase">Trust.</span>
+                            </motion.h2>
+                            <div className="space-y-10 text-slate-500 font-medium text-xl leading-relaxed">
+                                <p>
+                                    In an era of sophisticated counterfeiting, AuthentiCheck serves as the definitive barrier. We merge industrial supply chain expertise with decentralized ledger architecture.
+                                </p>
+                                <p>
+                                    Our mission: Eliminate the $4.5T illicit trade economy by empowering every consumer with immediate, cryptographically secured proof of origin.
+                                </p>
+                            </div>
+
+                            <div className="mt-20 flex flex-wrap gap-16">
+                                <div>
+                                    <div className="text-5xl font-black text-slate-900 mb-3 tracking-tighter italic">99.8%</div>
+                                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">DETECTION ACCURACY</p>
+                                </div>
+                                <div className="hidden sm:block w-px h-16 bg-slate-100"></div>
+                                <div>
+                                    <div className="text-5xl font-black text-slate-900 mb-3 tracking-tighter italic">INSTANT</div>
+                                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">GLOBAL RESPONSE</p>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        <div className="relative">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1 }}
+                                className="relative z-10 p-6 bg-slate-50 rounded-[5rem] border border-slate-100 shadow-sm"
                             >
-                                Verify Products
-                            </Link>
+                                <img src="/hero_scan_real.png" className="rounded-[4rem] shadow-2xl grayscale-[0.8] hover:grayscale-0 transition-all duration-1000" />
+                                <div className="absolute -bottom-12 -right-12 bg-white p-14 rounded-[4rem] shadow-[0_40px_80px_rgba(0,0,0,0.1)] border border-slate-100 max-w-[360px] group transition-transform hover:-translate-y-2">
+                                    <div className="w-16 h-16 rounded-2xl bg-accent-pink/10 flex items-center justify-center text-accent-pink mb-8">
+                                        <ShieldExclamationIcon className="w-9 h-9" />
+                                    </div>
+                                    <p className="text-2xl font-black text-slate-900 mb-4 tracking-tight">The Origin Barrier.</p>
+                                    <p className="text-base text-slate-400 leading-relaxed font-medium">Cloning a code is simple. Overcoming a decentralized ledger is impossible.</p>
+                                </div>
+                            </motion.div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
+
+
+
+
 
             <Footer />
         </div>

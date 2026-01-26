@@ -10,10 +10,11 @@ import {
     EyeIcon,
     EyeSlashIcon,
     ArrowLeftIcon,
-    QrCodeIcon,
-    ArrowRightIcon,
+    ShieldCheckIcon,
+    SparklesIcon,
 } from '@heroicons/react/24/outline'
-import { ShieldCheckIcon as ShieldSolid } from '@heroicons/react/24/solid'
+
+import { NoisyBackground, GradientBlur } from '../components/Decorations'
 
 const Login = () => {
     const navigate = useNavigate()
@@ -31,251 +32,120 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (loading) return // Prevent duplicate submissions
         setLoading(true)
 
         try {
             const response = await authService.login(formData)
             login(response.data.user, response.data.access_token)
-            toast.success('Login successful!')
+            toast.success('Access Granted')
 
             switch (response.data.user.role) {
-                case 'admin':
-                    navigate('/admin')
-                    break
-                case 'manufacturer':
-                    navigate('/manufacturer')
-                    break
-                case 'consumer':
-                    navigate('/consumer')
-                    break
-                default:
-                    navigate('/')
+                case 'admin': navigate('/admin'); break
+                case 'manufacturer': navigate('/manufacturer'); break
+                case 'consumer': navigate('/consumer'); break
+                default: navigate('/')
             }
         } catch (error) {
-            toast.error(error.response?.data?.detail || 'Login failed')
+            toast.error(error.response?.data?.detail || 'Authentication failed')
         } finally {
             setLoading(false)
         }
     }
 
-    const stats = [
-        { value: '10M+', label: 'Products Verified' },
-        { value: '500+', label: 'Trusted Brands' },
-        { value: '99.9%', label: 'Accuracy' },
-    ]
-
     return (
-        <div className="min-h-screen flex relative">
-            {/* Fixed Background Image */}
-            <div
-                className="fixed inset-0 z-0"
-                style={{
-                    backgroundImage: 'url(/auth-bg.png)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundAttachment: 'fixed'
-                }}
-            >
-                {/* Dark Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#061e16]/95 via-[#061e16]/80 to-[#061e16]/60"></div>
+        <div className="min-h-screen bg-primary-dark flex relative overflow-hidden font-sans text-white">
+            <NoisyBackground />
+            <GradientBlur color="accent-pink" position="top-right" />
+            <div className="absolute top-0 right-0 w-1/2 h-full hidden lg:block overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-l from-primary-dark via-primary-dark/60 to-transparent z-10"></div>
+                <img src="/hero_scan_real.png" className="w-full h-full object-cover opacity-40 mix-blend-overlay" />
             </div>
 
-            {/* Left Side - Content Over Background */}
-            <div className="hidden lg:flex lg:w-1/2 relative z-10 items-center justify-center p-12">
-                <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="max-w-lg"
-                >
-                    {/* Main Heading */}
-                    <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
-                        Verify Product
-                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
-                            Authenticity
-                        </span>
-                    </h1>
-
-                    <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                        Protect yourself from counterfeit products with our blockchain-powered verification system.
-                    </p>
-
-                    {/* Feature List */}
-                    <div className="space-y-4 mb-10">
-                        {[
-                            { icon: '🔍', text: 'Instant QR Code Scanning' },
-                            { icon: '🛡️', text: 'Blockchain-Secured Verification' },
-                            { icon: '✅', text: 'Real-time Authenticity Reports' },
-                        ].map((item, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.3 + index * 0.1 }}
-                                className="flex items-center gap-4"
-                            >
-                                <div className="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-xl">
-                                    {item.icon}
-                                </div>
-                                <span className="text-lg text-white font-medium">{item.text}</span>
-                            </motion.div>
-                        ))}
-                    </div>
-
-                    {/* Stats */}
-                    <div className="flex gap-8">
-                        {stats.map((stat, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.6 + index * 0.1 }}
-                            >
-                                <div className="text-3xl font-bold text-emerald-400">{stat.value}</div>
-                                <div className="text-sm text-gray-400">{stat.label}</div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </motion.div>
-            </div>
-
-            {/* Right Side - Login Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative z-10">
-                <motion.div
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="w-full max-w-md"
-                >
-                    {/* Back Button */}
-                    <Link
-                        to="/"
-                        className="inline-flex items-center gap-2 text-gray-300 hover:text-emerald-400 transition-colors mb-8 group"
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 relative z-20">
+                <div className="w-full max-w-md">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
                     >
-                        <ArrowLeftIcon className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                        Back to Home
-                    </Link>
+                        <Link to="/" className="inline-flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-white mb-12 uppercase tracking-[0.2em] transition-colors group">
+                            <ArrowLeftIcon className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                            Return Home
+                        </Link>
 
-                    {/* Form Card */}
-                    <div className="bg-[#0a2a1f]/90 backdrop-blur-xl rounded-3xl p-8 border border-emerald-500/20 shadow-2xl shadow-black/50">
-                        {/* Logo */}
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/30">
-                                <ShieldSolid className="w-7 h-7 text-white" />
+                        <div className="flex items-center gap-5 mb-12">
+                            <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-accent-pink shadow-2xl">
+                                <ShieldCheckIcon className="w-7 h-7" />
                             </div>
                             <div>
-                                <span className="text-2xl font-bold text-white">
-                                    Authenti<span className="text-emerald-400">Check</span>
-                                </span>
-                                <div className="text-xs text-gray-400">Fake Product Identification</div>
+                                <h1 className="text-3xl font-bold text-white tracking-tight leading-none">Welcome Back</h1>
+                                <p className="text-[10px] font-medium text-gray-500 uppercase tracking-[0.2em] mt-2">Sign in to your dashboard</p>
                             </div>
                         </div>
 
-                        {/* Form Header */}
-                        <div className="mb-8">
-                            <h2 className="text-2xl font-bold text-white mb-2">Welcome Back! 👋</h2>
-                            <p className="text-gray-400">
-                                Sign in to verify authentic products
-                            </p>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            {/* Email */}
+                        <form onSubmit={handleSubmit} className="space-y-8">
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">
-                                    Email Address
-                                </label>
-                                <div className="relative">
-                                    <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-3 block">Email Protocol</label>
+                                <div className="relative group">
+                                    <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-accent-pink transition-colors" />
                                     <input
                                         type="email"
                                         name="email"
                                         value={formData.email}
                                         onChange={handleChange}
                                         required
-                                        className="w-full pl-12 pr-4 py-4 bg-[#061e16] border border-emerald-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
-                                        placeholder="you@example.com"
+                                        className="w-full pl-12 pr-4 py-4 rounded-2xl border border-white/10 bg-white/[0.03] text-white focus:border-accent-pink/50 focus:bg-white/[0.05] outline-none transition-all placeholder:text-gray-600 font-medium text-sm"
+                                        placeholder="id@secure.io"
                                     />
                                 </div>
                             </div>
 
-                            {/* Password */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">
-                                    Password
-                                </label>
-                                <div className="relative">
-                                    <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-3 block">Secret Hash</label>
+                                <div className="relative group">
+                                    <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-accent-pink transition-colors" />
                                     <input
                                         type={showPassword ? 'text' : 'password'}
                                         name="password"
                                         value={formData.password}
                                         onChange={handleChange}
                                         required
-                                        className="w-full pl-12 pr-12 py-4 bg-[#061e16] border border-emerald-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+                                        className="w-full pl-12 pr-12 py-4 rounded-2xl border border-white/10 bg-white/[0.03] text-white focus:border-accent-pink/50 focus:bg-white/[0.05] outline-none transition-all placeholder:text-gray-600 font-medium text-sm"
                                         placeholder="••••••••"
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-emerald-400 transition-colors"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                                     >
                                         {showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Submit Button */}
-                            <motion.button
+                            <button
                                 type="submit"
                                 disabled={loading}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-lg transition-all shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group relative overflow-hidden"
+                                className="w-full btn-primary py-5 rounded-2xl flex items-center justify-center gap-3 font-bold text-sm tracking-widest"
                             >
-                                {/* Shine Effect */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-
                                 {loading ? (
-                                    <>
-                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                        Signing in...
-                                    </>
+                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                 ) : (
                                     <>
-                                        <QrCodeIcon className="w-5 h-5" />
-                                        Sign In
-                                        <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        <SparklesIcon className="w-5 h-5" />
+                                        Unlock Dashboard
                                     </>
                                 )}
-                            </motion.button>
+                            </button>
                         </form>
 
-                        {/* Divider */}
-                        <div className="mt-8 pt-6 border-t border-emerald-500/20">
-                            <p className="text-center text-gray-400">
-                                New to AuthentiCheck?{' '}
-                                <Link to="/signup" className="text-emerald-400 font-semibold hover:text-emerald-300 hover:underline">
-                                    Create account
-                                </Link>
+                        <div className="mt-12 pt-10 border-t border-white/5 text-center">
+                            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em]">
+                                New Member?{' '}
+                                <Link to="/signup" className="text-accent-pink hover:text-white transition-colors underline underline-offset-4">Create Identity</Link>
                             </p>
                         </div>
-                    </div>
-
-                    {/* Trust Badge */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.5 }}
-                        className="mt-6 text-center"
-                    >
-                        <p className="text-sm text-gray-500 flex items-center justify-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            Protected by blockchain encryption
-                        </p>
                     </motion.div>
-                </motion.div>
+                </div>
             </div>
         </div>
     )
