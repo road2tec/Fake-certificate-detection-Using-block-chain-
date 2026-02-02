@@ -415,25 +415,57 @@ const VerifyProductPage = () => {
 
                             {result.product_details && (
                                 <div className="space-y-6 text-left p-8 bg-gray-50 rounded-[2rem] border border-gray-100 font-sans relative z-10">
-                                    <div className="flex items-start gap-4">
-                                        <div className="p-3 bg-white rounded-xl shadow-sm text-gray-400">
-                                            <ShieldCheckIcon className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-1">Authentic Producer</span>
-                                            <p className="font-bold text-lg text-gray-900 leading-tight">{result.product_details.manufacturer_name}</p>
-                                        </div>
-                                    </div>
+                                    <div className="flex gap-8">
+                                        {/* Product Image */}
+                                        {result.product_details.image_url && (
+                                            <div className="w-32 h-32 flex-shrink-0 rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-white p-2">
+                                                <img
+                                                    src={`http://localhost:8000${result.product_details.image_url}`}
+                                                    alt="Product"
+                                                    className="w-full h-full object-cover rounded-xl"
+                                                />
+                                            </div>
+                                        )}
 
-                                    <div className="h-px bg-gray-200 w-full"></div>
+                                        <div className="flex-1 space-y-6">
+                                            <div className="flex items-start gap-4">
+                                                <div className="p-3 bg-white rounded-xl shadow-sm text-gray-400">
+                                                    <ShieldCheckIcon className="w-6 h-6" />
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-1">Authentic Producer</span>
+                                                    <p className="font-bold text-lg text-gray-900 leading-tight">{result.product_details.manufacturer_name}</p>
+                                                </div>
+                                            </div>
 
-                                    <div className="flex items-start gap-4">
-                                        <div className="p-3 bg-white rounded-xl shadow-sm text-gray-400">
-                                            <ClockIcon className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-1">Immutable Timestamp</span>
-                                            <p className="font-bold text-lg text-gray-900 leading-tight">{new Date(result.product_details.registered_at).toLocaleDateString()} <span className="text-sm text-gray-400 font-medium ml-1">{new Date(result.product_details.registered_at).toLocaleTimeString()}</span></p>
+                                            <div className="h-px bg-gray-200 w-full"></div>
+
+                                            <div className="grid grid-cols-2 gap-6">
+                                                <div>
+                                                    <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-1">Batch Number</span>
+                                                    <p className="font-mono text-sm font-bold text-gray-700 bg-white border border-gray-200 px-3 py-1.5 rounded-lg inline-block">
+                                                        #{result.product_details.batch_number || 'N/A'}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-1">Expiry Date</span>
+                                                    <p className="font-mono text-sm font-bold text-amber-600 bg-amber-50 border border-amber-100 px-3 py-1.5 rounded-lg inline-block">
+                                                        {result.product_details.expiry_date || 'N/A'}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="h-px bg-gray-200 w-full"></div>
+
+                                            <div className="flex items-start gap-4">
+                                                <div className="p-3 bg-white rounded-xl shadow-sm text-gray-400">
+                                                    <ClockIcon className="w-6 h-6" />
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-1">Immutable Timestamp</span>
+                                                    <p className="font-bold text-lg text-gray-900 leading-tight">{new Date(result.product_details.registered_at).toLocaleDateString()} <span className="text-sm text-gray-400 font-medium ml-1">{new Date(result.product_details.registered_at).toLocaleTimeString()}</span></p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

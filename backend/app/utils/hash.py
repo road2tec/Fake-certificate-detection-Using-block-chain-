@@ -9,6 +9,8 @@ from datetime import datetime
 def generate_product_hash(
     product_name: str,
     brand: str,
+    batch_number: str,
+    expiry_date: str,
     manufacturer_id: str,
     timestamp: datetime = None
 ) -> str:
@@ -18,6 +20,8 @@ def generate_product_hash(
     Args:
         product_name: Name of the product
         brand: Brand name
+        batch_number: Batch number
+        expiry_date: Expiry date
         manufacturer_id: ID of the manufacturer
         timestamp: Optional timestamp (defaults to now)
         
@@ -27,8 +31,8 @@ def generate_product_hash(
     if timestamp is None:
         timestamp = datetime.utcnow()
     
-    # Create unique string from product details
-    unique_string = f"{product_name}|{brand}|{manufacturer_id}|{timestamp.isoformat()}|{uuid.uuid4()}"
+    # Create unique string from product details - INCLUDING NEW FIELDS
+    unique_string = f"{product_name}|{brand}|{batch_number}|{expiry_date}|{manufacturer_id}|{timestamp.isoformat()}|{uuid.uuid4()}"
     
     # Generate SHA-256 hash
     hash_object = hashlib.sha256(unique_string.encode())

@@ -1,10 +1,13 @@
 """
 Product routes for registration and management.
 """
-from fastapi import APIRouter, HTTPException, status, Depends, Query
+from fastapi import APIRouter, HTTPException, status, Depends, Query, File, UploadFile, Form
 from datetime import datetime
 from bson import ObjectId
 from typing import Optional
+import shutil
+import os
+from pathlib import Path
 from ..schemas.product import ProductRegister, ProductResponse
 from ..schemas.response import MessageResponse
 from ..config.database import get_products_collection, get_users_collection
@@ -12,13 +15,19 @@ from ..utils.auth import get_current_manufacturer, get_current_user
 from ..utils.hash import generate_product_hash
 from ..utils.qr_generator import generate_qr_code
 from ..blockchain.contract import register_product_on_blockchain
+import uuid
 
 router = APIRouter(prefix="/product", tags=["Products"])
 
 
 @router.post("/register", response_model=dict)
 async def register_product(
-    product_data: ProductRegister,
+    product_name: str = Form(...),
+    brand: str = Form(...),
+    batch_number: str = Form(...),
+    expiry_date: str = Form(...),
+    description: Optional[str] = Form(None),
+    image: Optional[UploadFile] = File(None),
     current_user: dict = Depends(get_current_manufacturer)
 ):
     """
@@ -30,22 +39,38 @@ async def register_product(
     
     manufacturer_id = str(current_user["_id"])
     
+    # Handle Image Upload
+    image_url = None
+    if image:
+        try:
+            # Create directory if not exists
+            upload_dir = Path("static/products")
+            upload_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Generate unique filename
+            file_extension = os.path.splitext(image.filename)[1]
+            filename = f"{uuid.uuid4()}{file_extension}"
+            file_path = upload_dir / filename
+            
+            # Save file
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(image.file, buffer)
+            
+            image_url = f"/static/products/{filename}"
+        except Exception as e:
+            print(f"Failed to upload image: {e}")
+    
     # Generate product hash
     product_hash = generate_product_hash(
-        product_data.product_name,
-        product_data.brand,
+        product_name,
+        brand,
+        batch_number,
+        expiry_date,
         manufacturer_id
     )
     
     # Generate QR code
-    # We embed the raw HASH in the visual text, but QR data can keep VERIFY: prefix if needed
-    # Actually, simpler is just the hash for both if the frontend handles it, 
-    # but let's stick to existing convention for QR data to avoid breaking scanner logic that might expect it.
-    qr_data = f"{product_hash}" # CHANGED: Removed VERIFY: prefix to make manual entry identical
-    # If the scanner logic currently REQUIRES 'VERIFY:', this breaks it.
-    # But usually simple logic is better. Let's assume the frontend just sends what it scans.
-    # Checking previous codes... consumer input just sends text.
-    
+    qr_data = f"{product_hash}"
     product_id = str(ObjectId())
     qr_code_path = generate_qr_code(qr_data, product_id)
     
@@ -61,9 +86,12 @@ async def register_product(
     # Create product document
     product_doc = {
         "_id": ObjectId(product_id),
-        "product_name": product_data.product_name,
-        "brand": product_data.brand,
-        "description": product_data.description,
+        "product_name": product_name,
+        "brand": brand,
+        "batch_number": batch_number,
+        "expiry_date": expiry_date,
+        "description": description,
+        "image_url": image_url,
         "manufacturer_id": manufacturer_id,
         "product_hash": product_hash,
         "qr_code_path": qr_code_path,
@@ -79,8 +107,8 @@ async def register_product(
         "message": "Product registered successfully",
         "product": {
             "id": product_id,
-            "product_name": product_data.product_name,
-            "brand": product_data.brand,
+            "product_name": product_name,
+            "brand": brand,
             "product_hash": product_hash,
             "qr_code_path": qr_code_path,
             "blockchain_tx_hash": blockchain_tx_hash,
@@ -112,6 +140,9 @@ async def get_my_products(
             "id": str(product["_id"]),
             "product_name": product["product_name"],
             "brand": product["brand"],
+            "batch_number": product.get("batch_number", "N/A"),
+            "expiry_date": product.get("expiry_date", "N/A"),
+            "image_url": product.get("image_url"),
             "description": product.get("description"),
             "product_hash": product["product_hash"],
             "qr_code_path": product["qr_code_path"],
@@ -160,6 +191,9 @@ async def get_product_details(
         "id": str(product["_id"]),
         "product_name": product["product_name"],
         "brand": product["brand"],
+        "batch_number": product.get("batch_number", "N/A"),
+        "expiry_date": product.get("expiry_date", "N/A"),
+        "image_url": product.get("image_url"),
         "description": product.get("description"),
         "manufacturer_id": product["manufacturer_id"],
         "manufacturer_name": manufacturer_name,

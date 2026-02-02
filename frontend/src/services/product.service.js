@@ -2,7 +2,11 @@ import api from './api'
 
 export const productService = {
     // Register a new product
-    registerProduct: (productData) => api.post('/product/register', productData),
+    registerProduct: (productData) => api.post('/product/register', productData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }),
 
     // Get manufacturer's products
     getMyProducts: (page = 1, perPage = 10) =>

@@ -16,8 +16,9 @@ A complete production-ready system for identifying counterfeit products using QR
 
 ### Key Capabilities
 - ✅ Blockchain-based product registration (Ethereum/Ganache)
-- ✅ QR code generation for each product
-- ✅ Real-time product verification (Camera & File Upload)
+- ✅ Product Image, Batch & Expiry Date tracking
+- ✅ Real-time product verification with Photo & Details
+- ✅ Robust Counterfeit Detection (Red Alert for invalid codes)
 - ✅ Manufacturer approval workflow
 - ✅ JWT authentication with role-based access
 - ✅ Admin dashboard with statistics and charts
@@ -188,15 +189,17 @@ The application uses a custom color palette:
 - Verification history table
 
 ### Manufacturer Dashboard
-- Product registration form
+- Product registration form with **Image Upload**
+- Batch Number & Expiry Date tracking
 - QR code preview
 - Blockchain transaction display
 - Product list
 
 ### Consumer Dashboard
 - QR code scanner (Camera & Drag-and-Drop) / hash input
-- Verification result with animation
-- Product authenticity card
+- Verification result with **Product Image Display**
+- Detailed authentication report (Batch #, Expiry, Timestamp)
+- **Counterfeit Alert System** for invalid/fake QRs
 - Verification history
 
 ## 🔧 Environment Variables

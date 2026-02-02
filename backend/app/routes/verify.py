@@ -35,6 +35,15 @@ async def verify_product(
     
     product_hash = verification_data.product_hash
     
+    # Check valid hash format
+    if len(product_hash) != 64:
+         return {
+            "is_authentic": False,
+            "message": "INVALID QR CODE: The scanned code format is incorrect.",
+            "blockchain_verified": False,
+            "verification_id": None
+        }
+
     # Check database for product
     product = await products.find_one({"product_hash": product_hash})
     
@@ -89,6 +98,9 @@ async def verify_product(
             "id": str(product["_id"]),
             "product_name": product["product_name"],
             "brand": product["brand"],
+            "batch_number": product.get("batch_number", "N/A"),
+            "expiry_date": product.get("expiry_date", "N/A"),
+            "image_url": product.get("image_url"),
             "description": product.get("description"),
             "manufacturer_name": manufacturer_name,
             "registered_at": product.get("created_at")
@@ -110,11 +122,14 @@ async def verify_product(
 @router.get("/by-hash/{product_hash}")
 async def verify_by_hash(product_hash: str):
     """Verify product by hash (GET method for QR scanning)."""
+    # If hash format is clearly invalid (not 64 chars), return fake immediately
     if len(product_hash) != 64:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid product hash format"
-        )
+        return {
+            "is_authentic": False,
+            "message": "INVALID QR CODE: This code does not match the secure format.",
+            "blockchain_verified": False,
+            "verification_id": None
+        }
     
     # Create verification data and call main verify function
     verification_data = ProductVerify(product_hash=product_hash)

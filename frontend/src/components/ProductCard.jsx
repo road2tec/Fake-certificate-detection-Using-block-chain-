@@ -36,9 +36,15 @@ const ProductCard = ({ product, showStatus = true }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             whileHover={{ y: -4 }}
-            className="p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/5 hover:border-accent-pink/20 transition-all duration-500 shadow-2xl relative group"
+            className="p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/5 hover:border-accent-pink/20 transition-all duration-500 shadow-2xl relative group overflow-hidden"
         >
             <div className="absolute top-0 right-0 w-24 h-24 bg-accent-pink/[0.02] blur-2xl rounded-full translate-x-12 -translate-y-12"></div>
+
+            {product.image_url && (
+                <div className="absolute top-0 right-0 bottom-0 w-1/3 z-0 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <img src={`http://localhost:8000${product.image_url}`} alt="Product" className="w-full h-full object-cover mask-image-linear" style={{ maskImage: 'linear-gradient(to left, black, transparent)' }} />
+                </div>
+            )}
 
             <div className="flex justify-between items-start mb-8 relative z-10">
                 <div className="flex items-center gap-4">
@@ -76,6 +82,20 @@ const ProductCard = ({ product, showStatus = true }) => {
                     <div className="flex items-center gap-2 text-gray-400">
                         <CalendarIcon className="w-3.5 h-3.5" />
                         <span className="text-xs font-bold">{product.created_at ? new Date(product.created_at).toLocaleDateString() : 'Active'}</span>
+                    </div>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                    <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-2">Batch No</span>
+                    <div className="flex items-center gap-2 text-gray-400">
+                        <span className="w-3.5 h-3.5 flex items-center justify-center font-serif text-[10px] border border-gray-600 rounded-sm">#</span>
+                        <span className="text-xs font-bold truncate">{product.batch_number || 'N/A'}</span>
+                    </div>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                    <span className="text-[8px] font-black text-amber-500/80 uppercase tracking-widest block mb-2">Expiry</span>
+                    <div className="flex items-center gap-2 text-gray-400">
+                        <CalendarIcon className="w-3.5 h-3.5 text-amber-500/60" />
+                        <span className="text-xs font-bold">{product.expiry_date || 'N/A'}</span>
                     </div>
                 </div>
             </div>

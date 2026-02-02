@@ -162,13 +162,20 @@ const RegisterProductPage = () => {
     const [formData, setFormData] = useState({
         product_name: '',
         brand: '',
+        batch_number: '',
+        expiry_date: '',
         description: '',
+        image: null
     })
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState(null)
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
+        if (e.target.type === 'file') {
+            setFormData({ ...formData, [e.target.name]: e.target.files[0] })
+        } else {
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+        }
     }
 
     const handleSubmit = async (e) => {
@@ -177,12 +184,43 @@ const RegisterProductPage = () => {
         setResult(null)
 
         try {
-            const response = await productService.registerProduct(formData)
+            const formDataToSend = new FormData();
+            formDataToSend.append('product_name', formData.product_name);
+            formDataToSend.append('brand', formData.brand);
+            formDataToSend.append('batch_number', formData.batch_number);
+            formDataToSend.append('expiry_date', formData.expiry_date);
+            formDataToSend.append('description', formData.description || '');
+
+            if (formData.image) {
+                formDataToSend.append('image', formData.image);
+            }
+
+            const response = await productService.registerProduct(formDataToSend)
             setResult(response.data)
             toast.success('Registration Written to Blockchain')
-            setFormData({ product_name: '', brand: '', description: '' })
+            setFormData({ product_name: '', brand: '', batch_number: '', expiry_date: '', description: '', image: null })
+
+            // Reset file input
+            const fileInput = document.getElementById('product-image-upload');
+            if (fileInput) fileInput.value = '';
+
         } catch (error) {
-            toast.error(error.response?.data?.detail || 'Ledger write failed')
+            console.error(error)
+            let errorMessage = 'Ledger write failed';
+
+            if (error.response?.data?.detail) {
+                const detail = error.response.data.detail;
+                if (Array.isArray(detail)) {
+                    // Handle Pydantic validation errors (array of objects)
+                    errorMessage = detail.map(err => `${err.loc[1]}: ${err.msg}`).join(', ');
+                } else if (typeof detail === 'string') {
+                    errorMessage = detail;
+                } else if (typeof detail === 'object') {
+                    errorMessage = JSON.stringify(detail);
+                }
+            }
+
+            toast.error(errorMessage)
         } finally {
             setLoading(false)
         }
@@ -220,6 +258,41 @@ const RegisterProductPage = () => {
                                     required
                                 />
                             </div>
+                            <div>
+                                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Batch Number</label>
+                                <input
+                                    type="text"
+                                    name="batch_number"
+                                    value={formData.batch_number}
+                                    onChange={handleChange}
+                                    className="w-full px-5 py-4 rounded-2xl bg-primary-dark border border-white/5 text-white focus:border-accent-pink outline-none transition-all font-medium text-sm"
+                                    placeholder="e.g. BN-2023-001"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Expiry Date</label>
+                                <input
+                                    type="date"
+                                    name="expiry_date"
+                                    value={formData.expiry_date}
+                                    onChange={handleChange}
+                                    className="w-full px-5 py-4 rounded-2xl bg-primary-dark border border-white/5 text-white focus:border-accent-pink outline-none transition-all font-medium text-sm"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Product Image</label>
+                            <input
+                                id="product-image-upload"
+                                type="file"
+                                name="image"
+                                onChange={handleChange}
+                                accept="image/*"
+                                className="w-full px-5 py-4 rounded-2xl bg-primary-dark border border-white/5 text-white focus:border-accent-pink outline-none transition-all font-medium text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-accent-pink file:text-white hover:file:bg-pink-600"
+                            />
                         </div>
 
                         <div>
