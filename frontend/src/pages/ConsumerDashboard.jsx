@@ -466,6 +466,15 @@ const VerifyProductPage = () => {
                                                     <p className="font-bold text-lg text-gray-900 leading-tight">{new Date(result.product_details.registered_at).toLocaleDateString()} <span className="text-sm text-gray-400 font-medium ml-1">{new Date(result.product_details.registered_at).toLocaleTimeString()}</span></p>
                                                 </div>
                                             </div>
+
+                                            <div className="h-px bg-gray-200 w-full"></div>
+
+                                            <div className="bg-gray-100 p-4 rounded-xl border border-gray-200">
+                                                <span className="text-[9px] font-black uppercase text-gray-400 tracking-widest block mb-1">Blockchain Transaction ID</span>
+                                                <code className="block text-[10px] break-all font-mono text-gray-600">
+                                                    {result.product_details.blockchain_tx_hash || 'PENDING_BLOCK_CONFIRMATION'}
+                                                </code>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
