@@ -31,12 +31,14 @@ const CertificateThumbnail = ({ certificate }) => {
             <div className="flex justify-between items-end mt-4 pt-4 border-t border-slate-50">
                     <div className="p-3 bg-white rounded-xl shadow-lg flex items-center justify-center border border-slate-100">
                        <img 
-                            src={`http://localhost:8000${certificate.qr_code_path}`} 
+                            src={certificate.qr_code_path ? `http://localhost:8000${certificate.qr_code_path}` : `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${certificate.certificate_hash || 'PREVIEW-ONLY'}`} 
                             alt="QR" 
                             className="w-20 h-20 object-contain block" 
                             crossOrigin="anonymous"
                             onError={(e) => {
-                                e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + certificate.certificate_hash
+                                if (!e.target.src.includes('qrserver')) {
+                                    e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + (certificate.certificate_hash || 'PREVIEW-ONLY')
+                                }
                             }}
                         />
                     </div>
