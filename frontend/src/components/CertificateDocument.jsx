@@ -49,13 +49,16 @@ const CertificateDocument = ({ certificate }) => {
             {/* Footer with QR and Signatures */}
             <div className="flex justify-between items-end px-12 border-t border-slate-100 pt-16">
                 <div className="w-1/3 text-left">
-                    <div className="mb-8 p-4 bg-slate-50 rounded-2xl border border-slate-100 inline-block group">
+                    <div className="mb-8 p-4 bg-white rounded-2xl border border-slate-100 inline-block shadow-sm">
                         <img 
-                            src={`http://localhost:8000${certificate.qr_code_path}`} 
+                            src={certificate.qr_code_path ? `http://localhost:8000${certificate.qr_code_path}` : `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${certificate.certificate_hash || 'PREVIEW-ONLY'}`} 
                             alt="Verification QR" 
-                            className="w-32 h-32 mix-blend-multiply" 
+                            className="w-32 h-32 object-contain block" 
+                            crossOrigin="anonymous"
                             onError={(e) => {
-                                e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + certificate.certificate_hash
+                                if (!e.target.src.includes('qrserver')) {
+                                    e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + (certificate.certificate_hash || 'PREVIEW-ONLY')
+                                }
                             }}
                         />
                         <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-widest text-center">Scan to Verify</p>

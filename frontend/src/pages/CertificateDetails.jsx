@@ -82,11 +82,14 @@ const CertificateDetails = () => {
                     <div className="p-8 rounded-[3rem] bg-white text-primary-dark aspect-square flex flex-col items-center justify-center shadow-2xl relative overflow-hidden group border-b-8 border-accent-pink">
                         <div className="absolute inset-0 bg-gradient-to-br from-accent-pink/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         <img
-                            src={`http://localhost:8000${certificate.qr_code_path}`}
+                            src={certificate.qr_code_path ? `http://localhost:8000${certificate.qr_code_path}` : `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${certificate.certificate_hash || 'PREVIEW-ONLY'}`}
                             alt="Verification QR"
-                            className="w-full h-full relative z-10 mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
+                            className="w-full h-full relative z-10 object-contain transition-transform duration-700 group-hover:scale-105"
+                            crossOrigin="anonymous"
                             onError={(e) => {
-                                e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + certificate.certificate_hash
+                                if (!e.target.src.includes('qrserver')) {
+                                    e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + (certificate.certificate_hash || 'PREVIEW-ONLY')
+                                }
                             }}
                         />
                     </div>
