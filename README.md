@@ -95,7 +95,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Start the server
-uvicorn app.main:app --reload
+python -muvicorn app.main:app --reload
 ```
 
 The API will be available at `http://localhost:8000`

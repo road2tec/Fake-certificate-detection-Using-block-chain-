@@ -5,12 +5,8 @@ import Footer from '../components/Footer'
 import { NoisyBackground, GradientBlur } from '../components/Decorations'
 import {
     ShieldCheckIcon,
-    ArrowPathIcon,
-    BoltIcon,
-    UserGroupIcon,
     ArrowRightIcon,
     QrCodeIcon,
-    MagnifyingGlassIcon,
     DocumentCheckIcon,
     SparklesIcon,
     GlobeAltIcon,
@@ -20,9 +16,7 @@ import {
     CpuChipIcon,
     LockClosedIcon,
     CheckBadgeIcon,
-    WalletIcon,
     ArrowsRightLeftIcon,
-    KeyIcon,
 } from '@heroicons/react/24/outline'
 
 const LandingPage = () => {
@@ -34,48 +28,48 @@ const LandingPage = () => {
     });
 
     const categories = [
-        { title: 'Luxury Skincare', image: '/cat_cosmetics_real.png', count: '1.2k Secured', tag: 'Beauty' },
-        { title: 'Fine Jewelry', image: '/cat_jewelry_real.png', count: '850+ Verified', tag: 'Luxury' },
-        { title: 'Medical Grade', image: '/cat_medicine_real.png', count: '10k+ Protected', tag: 'Health' },
-        { title: 'Organic Produce', image: '/cat_produce_real.png', count: '5k+ Tracked', tag: 'Agro' },
+        { title: 'Academic Degrees', image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1000&auto=format&fit=crop', count: '1.2k Secured', tag: 'Education' },
+        { title: 'Professional Certs', image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000&auto=format&fit=crop', count: '850+ Verified', tag: 'Career' },
+        { title: 'Training Badges', image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000&auto=format&fit=crop', count: '10k+ Protected', tag: 'Skill' },
+        { title: 'Legal Documents', image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=1000&auto=format&fit=crop', count: '5k+ Tracked', tag: 'Legal' },
     ]
 
     const features = [
         {
             icon: ShieldCheckIcon,
-            title: 'Immutable Blockchain Core',
-            description: 'Every product unit is anchored to a decentralized Ethereum-based ledger. Once recorded, the data is permanent and tamper-proof.',
+            title: 'Immutable Ledger',
+            description: 'Every certificate issued is anchored to a decentralized Ethereum-based ledger. Once recorded, the academic record is permanent and tamper-proof.',
             details: ['Decentralized nodes', 'Zero downtime', 'Cryptographic hashing']
         },
         {
             icon: FingerPrintIcon,
-            title: 'Unit-Level QR Identification',
-            description: 'Mass replication is impossible. Every single physical unit receives a unique digital signature that cannot be cloned.',
-            details: ['Non-reproducible codes', 'Anti-cloning technology', 'Scan-limit alerts']
+            title: 'QR Identification',
+            description: 'Forging a certificate is now impossible. Every single document receives a unique digital signature that cannot be cloned or replicated.',
+            details: ['Non-reproducible codes', 'Anti-cloning technology', 'Instant validation']
         },
         {
             icon: CpuChipIcon,
-            title: 'Smart Execution Protocol',
-            description: 'Automated smart contracts manage ownership and status updates without human intervention, ensuring total integrity.',
-            details: ['Auto-verification', 'Secure hand-offs', 'Instant resolution']
+            title: 'Smart Verification',
+            description: 'Automated smart contracts manage certificate status and authenticity without human intervention, ensuring total educational integrity.',
+            details: ['Auto-verification', 'Secure issuance', 'Instant resolution']
         },
     ]
 
     const steps = [
         {
             icon: CloudArrowUpIcon,
-            title: 'Manufacturer Upload',
-            description: 'Companies register their original products onto our secure blockchain system to create a permanent record.',
+            title: 'Institution Issuance',
+            description: 'Universities and institutions register original certificates onto our secure blockchain system to create a permanent record.',
         },
         {
             icon: ArrowsRightLeftIcon,
-            title: 'Inventory Tracking',
-            description: 'The system tracks the product movement through the supply chain to ensure nothing is swapped or cloned.',
+            title: 'Identity Linkage',
+            description: 'The system links the certificate to the student details and institution signature, preventing identity theft and credential fraud.',
         },
         {
             icon: QrCodeIcon,
             title: 'Instant Verification',
-            description: 'Customers scan the QR code using their phone to instantly see if the product is authentic or fake.',
+            description: 'Employers and verifiers scan the QR code to instantly see if the certificate is authentic or a fraudulent copy.',
         },
     ]
 
@@ -104,7 +98,7 @@ const LandingPage = () => {
             <section className="relative min-h-[110vh] flex flex-col items-center justify-between overflow-hidden bg-slate-900">
                 <div
                     className="absolute inset-0 z-0 bg-cover bg-center opacity-40 blur-[1px] grayscale-[0.2]"
-                    style={{ backgroundImage: 'url(/hero_scan_real.png)' }}
+                    style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=1000&auto=format&fit=crop)' }}
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
@@ -127,7 +121,7 @@ const LandingPage = () => {
                             transition={{ duration: 0.8, ease: "easeOut" }}
                             className="text-6xl lg:text-[8.5rem] font-black text-white mb-10 leading-[0.85] tracking-tighter"
                         >
-                            Authentic. <br />
+                            Certified. <br />
                             <span className="hero-text-gradient italic">Without Doubt.</span>
                         </motion.h1>
 
@@ -137,7 +131,7 @@ const LandingPage = () => {
                             transition={{ duration: 0.8, delay: 0.2 }}
                             className="text-xl text-white/40 mb-16 leading-relaxed max-w-2xl font-medium"
                         >
-                            We provide the digital bridge between physical assets and consumer trust. Deploying military-grade blockchain verification to the global marketplace with absolute transparency.
+                            We provide the digital bridge between academic credentials and employer trust. Deploying military-grade blockchain verification to the educational sector with absolute transparency.
                         </motion.p>
 
                         <motion.div
@@ -147,11 +141,11 @@ const LandingPage = () => {
                             className="flex flex-wrap gap-8"
                         >
                             <Link to="/signup?role=consumer" className="btn-primary flex items-center gap-4 px-12 py-6 rounded-[2rem] shadow-none hover:shadow-2xl hover:shadow-accent-pink/20 transition-all font-black tracking-widest text-[11px]">
-                                START VERIFYING
+                                VERIFY CERTIFICATE
                                 <ArrowRightIcon className="w-4 h-4" />
                             </Link>
                             <Link to="/signup?role=manufacturer" className="btn-outline border border-white/10 hover:bg-white/5 transition-all px-12 py-6 rounded-[2rem] font-black tracking-widest text-[11px]">
-                                PRODUCER PORTAL
+                                INSTITUTION PORTAL
                             </Link>
                         </motion.div>
                     </div>
@@ -163,8 +157,8 @@ const LandingPage = () => {
                         <div className="flex gap-16 lg:gap-32">
                             {[
                                 { label: 'Audit Trail', value: '100% Immutable' },
-                                { label: 'Active Scans', value: '12k+ Units' },
-                                { label: 'Uptime', value: '99.99%' },
+                                { label: 'Verified Certs', value: '12k+' },
+                                { label: 'Node Uptime', value: '99.99%' },
                             ].map((stat, i) => (
                                 <div key={i} className="min-w-[120px]">
                                     <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em] mb-3">{stat.label}</p>
@@ -185,11 +179,11 @@ const LandingPage = () => {
                 </div>
             </section>
 
-            {/* --- SECTION 5: INDUSTRIES (Moved) --- */}
+            {/* --- SECTION 5: INDUSTRIES --- */}
             <section className="py-48 bg-slate-50 border-y border-slate-100">
                 <div className="max-w-7xl mx-auto px-12 text-center mb-32">
-                    <p className="text-[11px] font-black text-accent-pink uppercase tracking-[0.5em] mb-6">MARKET VERTICALS</p>
-                    <h2 className="text-5xl lg:text-7xl font-black text-slate-900 tracking-tighter">High-Value Networks.</h2>
+                    <p className="text-[11px] font-black text-accent-pink uppercase tracking-[0.5em] mb-6">CREDENTIAL VERTICALS</p>
+                    <h2 className="text-5xl lg:text-7xl font-black text-slate-900 tracking-tighter">Securing All Achievements.</h2>
                 </div>
                 <div className="max-w-7xl mx-auto px-12">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
@@ -238,7 +232,7 @@ const LandingPage = () => {
                                 transition={{ delay: 0.1 }}
                                 className="text-6xl lg:text-[7.5rem] font-black text-slate-900 tracking-tighter mb-10 leading-[0.9]"
                             >
-                                Security <br /> <span className="text-slate-200 uppercase">Core.</span>
+                                Secure <br /> <span className="text-slate-200 uppercase">Verification.</span>
                             </motion.h2>
                             <motion.p
                                 initial={{ opacity: 0, y: 20 }}
@@ -247,7 +241,7 @@ const LandingPage = () => {
                                 transition={{ delay: 0.2 }}
                                 className="text-slate-500 font-medium text-xl leading-relaxed max-w-2xl"
                             >
-                                Our multi-layered defense system combines decentralization with high-speed optical scanning to protect every single asset in your supply chain.
+                                Our multi-layered defense system combines decentralization with cryptographic signatures to protect every credential from plagiarism and fraud.
                             </motion.p>
                         </div>
                         <motion.div
@@ -292,7 +286,6 @@ const LandingPage = () => {
                 </div>
             </section>
 
-            {/* --- SECTION 3: HOW IT WORKS --- */}
             {/* --- SECTION 3: HOW IT WORKS --- */}
             <section id="how-it-works" className="py-48 bg-slate-900 relative">
                 <NoisyBackground />
@@ -360,7 +353,7 @@ const LandingPage = () => {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                         >
-                            <div className="inline-block px-5 py-2 rounded-xl bg-slate-900 text-white font-black text-[10px] uppercase tracking-[0.5em] mb-12">AUTHENTICHECK IDENTITY</div>
+                            <div className="inline-block px-5 py-2 rounded-xl bg-slate-900 text-white font-black text-[10px] uppercase tracking-[0.5em] mb-12">CERTICHECK IDENTITY</div>
                             <motion.h2
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
@@ -368,26 +361,26 @@ const LandingPage = () => {
                                 transition={{ delay: 0.1 }}
                                 className="text-6xl lg:text-[8rem] font-black text-slate-900 tracking-tighter mb-12 leading-[0.85]"
                             >
-                                Restoring <br /> <span className="text-slate-200 uppercase">Trust.</span>
+                                Restoring <br /> <span className="text-slate-200 uppercase">Truth.</span>
                             </motion.h2>
                             <div className="space-y-10 text-slate-500 font-medium text-xl leading-relaxed">
                                 <p>
-                                    In an era of sophisticated counterfeiting, AuthentiCheck serves as the definitive barrier. We merge industrial supply chain expertise with decentralized ledger architecture.
+                                    In an era of sophisticated forged credentials, CertiCheck serves as the definitive barrier. We merge academic record-keeping with decentralized ledger architecture.
                                 </p>
                                 <p>
-                                    Our mission: Eliminate the $4.5T illicit trade economy by empowering every consumer with immediate, cryptographically secured proof of origin.
+                                    Our mission: Eliminate certificate fraud by empowering every employer and institution with immediate, cryptographically secured proof of achievement.
                                 </p>
                             </div>
 
                             <div className="mt-20 flex flex-wrap gap-16">
                                 <div>
-                                    <div className="text-5xl font-black text-slate-900 mb-3 tracking-tighter italic">99.8%</div>
-                                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">DETECTION ACCURACY</p>
+                                    <div className="text-5xl font-black text-slate-900 mb-3 tracking-tighter italic">100%</div>
+                                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">VERIFICATION ACCURACY</p>
                                 </div>
                                 <div className="hidden sm:block w-px h-16 bg-slate-100"></div>
                                 <div>
                                     <div className="text-5xl font-black text-slate-900 mb-3 tracking-tighter italic">INSTANT</div>
-                                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">GLOBAL RESPONSE</p>
+                                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">SECURE ACCESS</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -400,23 +393,19 @@ const LandingPage = () => {
                                 transition={{ duration: 1 }}
                                 className="relative z-10 p-6 bg-slate-50 rounded-[5rem] border border-slate-100 shadow-sm"
                             >
-                                <img src="/hero_scan_real.png" className="rounded-[4rem] shadow-2xl grayscale-[0.8] hover:grayscale-0 transition-all duration-1000" />
+                                <img src="https://images.unsplash.com/photo-1521791136064-7986c29535a7?q=80&w=1000&auto=format&fit=crop" className="rounded-[4rem] shadow-2xl grayscale-[0.8] hover:grayscale-0 transition-all duration-1000" />
                                 <div className="absolute -bottom-12 -right-12 bg-white p-14 rounded-[4rem] shadow-[0_40px_80px_rgba(0,0,0,0.1)] border border-slate-100 max-w-[360px] group transition-transform hover:-translate-y-2">
                                     <div className="w-16 h-16 rounded-2xl bg-accent-pink/10 flex items-center justify-center text-accent-pink mb-8">
                                         <ShieldExclamationIcon className="w-9 h-9" />
                                     </div>
                                     <p className="text-2xl font-black text-slate-900 mb-4 tracking-tight">The Origin Barrier.</p>
-                                    <p className="text-base text-slate-400 leading-relaxed font-medium">Cloning a code is simple. Overcoming a decentralized ledger is impossible.</p>
+                                    <p className="text-base text-slate-400 leading-relaxed font-medium">Forging a document is simple. Overcoming a decentralized ledger is impossible.</p>
                                 </div>
                             </motion.div>
                         </div>
                     </div>
                 </div>
             </section>
-
-
-
-
 
             <Footer />
         </div>

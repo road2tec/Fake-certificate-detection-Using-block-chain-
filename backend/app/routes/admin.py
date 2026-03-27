@@ -1,5 +1,5 @@
 """
-Admin routes for manufacturer approval and system management.
+Admin routes for institution approval and system management.
 """
 from fastapi import APIRouter, HTTPException, status, Depends, Query
 from datetime import datetime
@@ -49,13 +49,13 @@ async def get_dashboard_stats(current_admin: dict = Depends(get_current_admin)):
 
 
 @router.get("/manufacturers")
-async def get_manufacturers(
+async def get_institutions(
     status_filter: Optional[str] = Query(None, alias="status"),
     page: int = Query(1, ge=1),
     per_page: int = Query(10, ge=1, le=100),
     current_admin: dict = Depends(get_current_admin)
 ):
-    """Get list of manufacturers with optional status filter."""
+    """Get list of institutions with optional status filter."""
     users = get_users_collection()
     
     # Build query
@@ -70,20 +70,20 @@ async def get_manufacturers(
     skip = (page - 1) * per_page
     cursor = users.find(query).skip(skip).limit(per_page).sort("created_at", -1)
     
-    manufacturers = []
+    institutions = []
     async for user in cursor:
-        manufacturers.append({
+        institutions.append({
             "id": str(user["_id"]),
             "name": user["name"],
             "email": user["email"],
-            "company_name": user.get("company_name"),
-            "company_address": user.get("company_address"),
+            "institution_name": user.get("company_name"),
+            "institution_address": user.get("company_address"),
             "status": user.get("status", "pending"),
             "created_at": user.get("created_at")
         })
     
     return {
-        "items": manufacturers,
+        "items": institutions,
         "total": total,
         "page": page,
         "per_page": per_page,
@@ -91,36 +91,36 @@ async def get_manufacturers(
     }
 
 
-@router.put("/approve/{manufacturer_id}", response_model=MessageResponse)
-async def approve_manufacturer(
-    manufacturer_id: str,
+@router.put("/approve/{institution_id}", response_model=MessageResponse)
+async def approve_institution(
+    institution_id: str,
     current_admin: dict = Depends(get_current_admin)
 ):
-    """Approve a pending manufacturer."""
+    """Approve a pending institution."""
     users = get_users_collection()
     notifications = get_notifications_collection()
     
     # Validate ObjectId
     try:
-        obj_id = ObjectId(manufacturer_id)
+        obj_id = ObjectId(institution_id)
     except:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid manufacturer ID"
+            detail="Invalid institution ID"
         )
     
-    # Find manufacturer
-    manufacturer = await users.find_one({"_id": obj_id, "role": "manufacturer"})
-    if not manufacturer:
+    # Find institution
+    institution = await users.find_one({"_id": obj_id, "role": "manufacturer"})
+    if not institution:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Manufacturer not found"
+            detail="Institution not found"
         )
     
-    if manufacturer.get("status") == "approved":
+    if institution.get("status") == "approved":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Manufacturer is already approved"
+            detail="Institution is already approved"
         )
     
     # Update status
@@ -131,47 +131,47 @@ async def approve_manufacturer(
     
     # Create notification
     await notifications.insert_one({
-        "message": "Your manufacturer account has been approved! You can now login and register products.",
+        "message": "Your institution account has been approved! You can now login and issue certificates.",
         "type": "approval",
-        "user_id": manufacturer_id,
+        "user_id": institution_id,
         "created_at": datetime.utcnow(),
         "is_read": False
     })
     
-    return MessageResponse(message=f"Manufacturer {manufacturer['name']} has been approved")
+    return MessageResponse(message=f"Institution {institution['name']} has been approved")
 
 
-@router.put("/reject/{manufacturer_id}", response_model=MessageResponse)
-async def reject_manufacturer(
-    manufacturer_id: str,
+@router.put("/reject/{institution_id}", response_model=MessageResponse)
+async def reject_institution(
+    institution_id: str,
     reason: Optional[str] = None,
     current_admin: dict = Depends(get_current_admin)
 ):
-    """Reject a pending manufacturer."""
+    """Reject a pending institution."""
     users = get_users_collection()
     notifications = get_notifications_collection()
     
     # Validate ObjectId
     try:
-        obj_id = ObjectId(manufacturer_id)
+        obj_id = ObjectId(institution_id)
     except:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid manufacturer ID"
+            detail="Invalid institution ID"
         )
     
-    # Find manufacturer
-    manufacturer = await users.find_one({"_id": obj_id, "role": "manufacturer"})
-    if not manufacturer:
+    # Find institution
+    institution = await users.find_one({"_id": obj_id, "role": "manufacturer"})
+    if not institution:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Manufacturer not found"
+            detail="Institution not found"
         )
     
-    if manufacturer.get("status") == "rejected":
+    if institution.get("status") == "rejected":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Manufacturer is already rejected"
+            detail="Institution is already rejected"
         )
     
     # Update status
@@ -181,28 +181,28 @@ async def reject_manufacturer(
     )
     
     # Create notification
-    message = "Your manufacturer account has been rejected."
+    message = "Your institution account has been rejected."
     if reason:
         message += f" Reason: {reason}"
     
     await notifications.insert_one({
         "message": message,
         "type": "rejection",
-        "user_id": manufacturer_id,
+        "user_id": institution_id,
         "created_at": datetime.utcnow(),
         "is_read": False
     })
     
-    return MessageResponse(message=f"Manufacturer {manufacturer['name']} has been rejected")
+    return MessageResponse(message=f"Institution {institution['name']} has been rejected")
 
 
 @router.get("/products")
-async def get_all_products(
+async def get_all_certificates(
     page: int = Query(1, ge=1),
     per_page: int = Query(10, ge=1, le=100),
     current_admin: dict = Depends(get_current_admin)
 ):
-    """Get all registered products."""
+    """Get all registered certificates."""
     products = get_products_collection()
     users = get_users_collection()
     
@@ -213,27 +213,27 @@ async def get_all_products(
     skip = (page - 1) * per_page
     cursor = products.find({}).skip(skip).limit(per_page).sort("created_at", -1)
     
-    product_list = []
-    async for product in cursor:
-        # Get manufacturer name
-        manufacturer = await users.find_one({"_id": ObjectId(product["manufacturer_id"])})
-        manufacturer_name = manufacturer["name"] if manufacturer else "Unknown"
+    certificate_list = []
+    async for cert in cursor:
+        # Get institution name
+        institution = await users.find_one({"_id": ObjectId(cert["manufacturer_id"])})
+        institute_name = institution["name"] if institution else "Unknown"
         
-        product_list.append({
-            "id": str(product["_id"]),
-            "product_name": product["product_name"],
-            "brand": product["brand"],
-            "description": product.get("description"),
-            "manufacturer_id": product["manufacturer_id"],
-            "manufacturer_name": manufacturer_name,
-            "product_hash": product["product_hash"],
-            "qr_code_path": product["qr_code_path"],
-            "blockchain_tx_hash": product.get("blockchain_tx_hash"),
-            "created_at": product.get("created_at")
+        certificate_list.append({
+            "id": str(cert["_id"]),
+            "certificate_name": cert.get("student_name") or cert.get("product_name"),
+            "course_name": cert.get("course_name") or cert.get("brand"),
+            "description": cert.get("description"),
+            "institution_id": cert["manufacturer_id"],
+            "institution_name": institute_name,
+            "certificate_hash": cert.get("certificate_hash") or cert.get("product_hash"),
+            "qr_code_path": cert["qr_code_path"],
+            "blockchain_tx_hash": cert.get("blockchain_tx_hash"),
+            "created_at": cert.get("created_at")
         })
     
     return {
-        "items": product_list,
+        "items": certificate_list,
         "total": total,
         "page": page,
         "per_page": per_page,
@@ -267,22 +267,22 @@ async def get_all_verifications(
     
     verification_list = []
     async for verification in cursor:
-        # Get product details
-        product = await products.find_one({"product_hash": verification["product_hash"]})
-        product_name = product["product_name"] if product else "Unknown"
+        # Get certificate details
+        cert = await products.find_one({"product_hash": verification["product_hash"]})
+        certificate_name = (cert.get("student_name") or cert.get("product_name")) if cert else "Unknown"
         
-        # Get consumer name if available
-        consumer_name = None
+        # Get verifier name if available
+        verifier_name = None
         if verification.get("consumer_id"):
-            consumer = await users.find_one({"_id": ObjectId(verification["consumer_id"])})
-            consumer_name = consumer["name"] if consumer else None
+            verifier = await users.find_one({"_id": ObjectId(verification["consumer_id"])})
+            verifier_name = verifier["name"] if verifier else None
         
         verification_list.append({
             "id": str(verification["_id"]),
-            "product_hash": verification["product_hash"],
-            "product_name": product_name,
-            "consumer_id": verification.get("consumer_id"),
-            "consumer_name": consumer_name,
+            "certificate_hash": verification["product_hash"],
+            "certificate_name": certificate_name,
+            "verifier_id": verification.get("consumer_id"),
+            "verifier_name": verifier_name,
             "result": verification["result"],
             "timestamp": verification.get("timestamp")
         })
@@ -360,7 +360,7 @@ async def get_activity_logs(
         activity_list.append({
             "id": str(verification["_id"]),
             "user_name": user_name,
-            "action": f"Verified product: {verification['product_hash'][:16]}...",
+            "action": f"Verified certificate: {verification['product_hash'][:16]}...",
             "result": verification["result"],
             "timestamp": verification.get("timestamp")
         })

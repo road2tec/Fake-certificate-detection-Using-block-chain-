@@ -41,8 +41,8 @@ const Login = () => {
 
             switch (response.data.user.role) {
                 case 'admin': navigate('/admin'); break
-                case 'manufacturer': navigate('/manufacturer'); break
-                case 'consumer': navigate('/consumer'); break
+                case 'manufacturer': navigate('/institution'); break
+                case 'consumer': navigate('/verifier'); break
                 default: navigate('/')
             }
         } catch (error) {
@@ -58,7 +58,7 @@ const Login = () => {
             <GradientBlur color="accent-pink" position="top-right" />
             <div className="absolute top-0 right-0 w-1/2 h-full hidden lg:block overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-l from-primary-dark via-primary-dark/60 to-transparent z-10"></div>
-                <img src="/hero_scan_real.png" className="w-full h-full object-cover opacity-40 mix-blend-overlay" />
+                <img src="https://images.unsplash.com/photo-1633412802994-5c058f151b66?q=80&w=1000&auto=format&fit=crop" className="w-full h-full object-cover opacity-40 mix-blend-overlay" />
             </div>
 
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 relative z-20">

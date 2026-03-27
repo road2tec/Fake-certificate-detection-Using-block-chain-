@@ -1,5 +1,5 @@
 """
-Fake Product Identification System - Main FastAPI Application.
+Fake Certificate Identification System - Main FastAPI Application.
 
 This is the main entry point for the backend API.
 """
@@ -16,7 +16,7 @@ from .config.settings import get_settings
 from .utils.auth import get_password_hash
 from .blockchain.web3_client import init_web3
 from .blockchain.contract import deploy_contract
-from .routes import auth, admin, product, verify
+from .routes import auth, admin, certificate, verify
 
 settings = get_settings()
 
@@ -25,7 +25,7 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     """Application lifespan handler for startup and shutdown."""
     # Startup
-    print("Starting Fake Product Identification System...")
+    print("Starting Fake Certificate Identification System...")
     
     # Connect to MongoDB
     await connect_to_database()
@@ -41,6 +41,7 @@ async def lifespan(app: FastAPI):
     
     # Create static directories
     Path("static/qrcodes").mkdir(parents=True, exist_ok=True)
+    Path("static/certificates").mkdir(parents=True, exist_ok=True)
     
     print("System ready!")
     
@@ -77,8 +78,8 @@ async def create_admin_user():
 
 # Create FastAPI app
 app = FastAPI(
-    title="Fake Product Identification System",
-    description="A blockchain-based system for identifying counterfeit products using QR codes",
+    title="Fake Certificate Identification System",
+    description="A blockchain-based system for identifying fraudulent certificates using QR codes",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -100,7 +101,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Include routers
 app.include_router(auth.router)
 app.include_router(admin.router)
-app.include_router(product.router)
+app.include_router(certificate.router)
 app.include_router(verify.router)
 
 
@@ -108,7 +109,7 @@ app.include_router(verify.router)
 async def root():
     """Root endpoint - API health check."""
     return {
-        "message": "Fake Product Identification System API",
+        "message": "Fake Certificate Identification System API",
         "status": "running",
         "version": "1.0.0",
         "docs": "/docs"

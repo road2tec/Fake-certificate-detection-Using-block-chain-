@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     
     # MongoDB
     mongodb_url: str = "mongodb://localhost:27017"
-    database_name: str = "fake_product_db"
+    database_name: str = "fake_certificate_db"
     
     # JWT
     secret_key: str = "fake-product-blockchain-secret-key-2024"

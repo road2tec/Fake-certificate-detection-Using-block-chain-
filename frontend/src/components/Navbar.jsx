@@ -33,8 +33,8 @@ const Navbar = () => {
     const getDashboardLink = () => {
         switch (user?.role) {
             case 'admin': return '/admin'
-            case 'manufacturer': return '/manufacturer'
-            case 'consumer': return '/consumer'
+            case 'manufacturer': return '/institution'
+            case 'consumer': return '/verifier'
             default: return '/'
         }
     }
@@ -64,7 +64,7 @@ const Navbar = () => {
                                 <ShieldCheckIcon className="w-5 h-5" />
                             </div>
                             <span className={`text-xl font-bold tracking-tight transition-colors duration-500 ${isScrolled ? 'text-slate-900' : 'text-white'}`}>
-                                Authenti<span className="text-accent-pink font-extrabold">Check</span>
+                                Certi<span className="text-accent-pink font-extrabold">Check</span>
                             </span>
                         </Link>
 

@@ -6,8 +6,8 @@ import LandingPage from './pages/LandingPage'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import AdminDashboard from './pages/AdminDashboard'
-import ManufacturerDashboard from './pages/ManufacturerDashboard'
-import ConsumerDashboard from './pages/ConsumerDashboard'
+import InstitutionDashboard from './pages/InstitutionDashboard'
+import VerifierDashboard from './pages/VerifierDashboard'
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -31,9 +31,9 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
             case 'admin':
                 return <Navigate to="/admin" replace />
             case 'manufacturer':
-                return <Navigate to="/manufacturer" replace />
+                return <Navigate to="/institution" replace />
             case 'consumer':
-                return <Navigate to="/consumer" replace />
+                return <Navigate to="/verifier" replace />
             default:
                 return <Navigate to="/login" replace />
         }
@@ -60,22 +60,22 @@ function App() {
                 }
             />
 
-            {/* Manufacturer Routes */}
+            {/* Institution Routes (was Manufacturer) */}
             <Route
-                path="/manufacturer/*"
+                path="/institution/*"
                 element={
                     <ProtectedRoute allowedRoles={['manufacturer']}>
-                        <ManufacturerDashboard />
+                        <InstitutionDashboard />
                     </ProtectedRoute>
                 }
             />
 
-            {/* Consumer Routes */}
+            {/* Verifier Routes (was Consumer) */}
             <Route
-                path="/consumer/*"
+                path="/verifier/*"
                 element={
                     <ProtectedRoute allowedRoles={['consumer']}>
-                        <ConsumerDashboard />
+                        <VerifierDashboard />
                     </ProtectedRoute>
                 }
             />

@@ -3,13 +3,15 @@ import { useAuth } from '../context/AuthContext'
 import {
     HomeIcon,
     UserGroupIcon,
-    CubeIcon,
     ShieldCheckIcon,
     BellIcon,
     ChartBarIcon,
     ClockIcon,
     ArrowRightOnRectangleIcon,
     CpuChipIcon,
+    AcademicCapIcon,
+    DocumentCheckIcon,
+    QrCodeIcon
 } from '@heroicons/react/24/outline'
 
 const Sidebar = ({ role }) => {
@@ -23,41 +25,41 @@ const Sidebar = ({ role }) => {
 
     const adminLinks = [
         { name: 'Dashboard', path: '/admin', icon: HomeIcon },
-        { name: 'Manufacturers', path: '/admin/manufacturers', icon: UserGroupIcon },
+        { name: 'Institutions', path: '/admin/institutions', icon: UserGroupIcon },
         { name: 'Pending Approvals', path: '/admin/approvals', icon: ClockIcon },
-        { name: 'Products', path: '/admin/products', icon: CubeIcon },
+        { name: 'Certificates', path: '/admin/certificates', icon: AcademicCapIcon },
         { name: 'Verifications', path: '/admin/verifications', icon: ShieldCheckIcon },
         { name: 'Notifications', path: '/admin/notifications', icon: BellIcon },
     ]
 
     const manufacturerLinks = [
-        { name: 'Dashboard', path: '/manufacturer', icon: HomeIcon },
-        { name: 'Register Product', path: '/manufacturer/register', icon: CubeIcon },
-        { name: 'My Products', path: '/manufacturer/products', icon: ChartBarIcon },
+        { name: 'Dashboard', path: '/institution', icon: HomeIcon },
+        { name: 'Issue Certificate', path: '/institution/issue', icon: DocumentCheckIcon },
+        { name: 'My Certificates', path: '/institution/certificates', icon: ChartBarIcon },
     ]
 
     const consumerLinks = [
-        { name: 'Dashboard', path: '/consumer', icon: HomeIcon },
-        { name: 'Verify Product', path: '/consumer/verify', icon: ShieldCheckIcon },
-        { name: 'History', path: '/consumer/history', icon: ClockIcon },
+        { name: 'Dashboard', path: '/verifier', icon: HomeIcon },
+        { name: 'Verify Certificate', path: '/verifier/verify', icon: QrCodeIcon },
+        { name: 'History', path: '/verifier/history', icon: ClockIcon },
     ]
 
     const links = role === 'admin' ? adminLinks : role === 'manufacturer' ? manufacturerLinks : consumerLinks
 
     const roleLabels = {
         admin: 'Global Admin',
-        manufacturer: 'Verified Producer',
-        consumer: 'Trusted User'
+        manufacturer: 'Verified Institution',
+        consumer: 'Verifier / Student'
     }
 
     return (
         <aside className="fixed left-0 top-0 bottom-0 w-64 bg-primary-dark border-r border-white/5 p-6 z-50 flex flex-col">
             {/* Logo */}
-            <div className="flex items-center gap-3 mb-10 px-2">
+            <div className="flex items-center gap-3 mb-10 px-2 cursor-pointer" onClick={() => navigate('/')}>
                 <div className="w-10 h-10 rounded-xl bg-accent-pink flex items-center justify-center text-white shadow-lg shadow-accent-pink/20">
                     <ShieldCheckIcon className="w-6 h-6" />
                 </div>
-                <span className="text-xl font-bold text-white tracking-tight">Authenti<span className="text-accent-pink font-black">Check</span></span>
+                <span className="text-xl font-bold text-white tracking-tight">Certi<span className="text-accent-pink font-black">Check</span></span>
             </div>
 
             {/* User Profile */}
@@ -79,7 +81,7 @@ const Sidebar = ({ role }) => {
                     <NavLink
                         key={link.path}
                         to={link.path}
-                        end={link.path === '/admin' || link.path === '/manufacturer' || link.path === '/consumer'}
+                        end={link.path === '/admin' || link.path === '/institution' || link.path === '/verifier'}
                         className={({ isActive }) =>
                             `flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-[13px] transition-all relative group ${isActive
                                 ? 'bg-white/[0.05] text-white shadow-sm'
