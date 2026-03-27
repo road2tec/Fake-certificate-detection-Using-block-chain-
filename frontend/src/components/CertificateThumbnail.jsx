@@ -29,16 +29,17 @@ const CertificateThumbnail = ({ certificate }) => {
             </div>
 
             <div className="flex justify-between items-end mt-4 pt-4 border-t border-slate-50">
-                <div className="p-1 px-2 bg-slate-50 rounded-lg flex items-center justify-center">
-                   <img 
-                        src={`http://localhost:8000${certificate.qr_code_path}`} 
-                        alt="QR" 
-                        className="w-10 h-10 mix-blend-multiply opacity-80" 
-                        onError={(e) => {
-                            e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=' + certificate.certificate_hash
-                        }}
-                    />
-                </div>
+                    <div className="p-3 bg-white rounded-xl shadow-lg flex items-center justify-center border border-slate-100">
+                       <img 
+                            src={`http://localhost:8000${certificate.qr_code_path}`} 
+                            alt="QR" 
+                            className="w-20 h-20 object-contain block" 
+                            crossOrigin="anonymous"
+                            onError={(e) => {
+                                e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + certificate.certificate_hash
+                            }}
+                        />
+                    </div>
                 <div className="text-center flex flex-col items-center">
                     <ShieldCheckIcon className="w-5 h-5 text-emerald-500/40" />
                     <span className="text-[6px] font-black text-emerald-600 uppercase tracking-widest">Verified</span>

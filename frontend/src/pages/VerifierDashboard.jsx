@@ -251,19 +251,24 @@ const VerifyCertificatePage = () => {
 
         const html5QrCode = new Html5Qrcode("reader-hidden")
         try {
+            // Options for scanFile to be more robust
             const decodedText = await html5QrCode.scanFile(file, true)
             toast.dismiss()
             setHashInput(decodedText)
-            toast.success('Code Read Successfully')
+            toast.success('Certificate Authenticated')
             handleVerify(decodedText)
         } catch (err) {
             toast.dismiss()
-            toast.error('Could not read QR code. Try cropping it closely.')
+            toast.error('Scan Failed: Please ensure the QR code is clear and well-lit.')
+            console.error("QR Scan error:", err)
         } finally {
             setScannerStatus('Idle')
             setTimeout(() => {
-                try { html5QrCode.clear() } catch (e) { }
-            }, 500)
+                try { 
+                    html5QrCode.clear() 
+                    html5QrCode.stop()
+                } catch (e) { }
+            }, 1000)
             e.target.value = ''
         }
     }

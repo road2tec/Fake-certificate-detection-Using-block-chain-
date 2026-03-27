@@ -60,9 +60,15 @@ const CertificateDocument = ({ certificate }) => {
                         />
                         <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-widest text-center">Scan to Verify</p>
                     </div>
-                    <div className="space-y-1">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Certificate ID</p>
-                        <p className="text-xs font-mono font-bold text-slate-600">{certificate.certificate_id || 'CERT-000000'}</p>
+                    <div className="space-y-3">
+                        <div>
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Digital Fingerprint</p>
+                            <p className="text-[9px] font-mono font-bold text-slate-500 break-all leading-tight">{certificate.certificate_hash || '0x0000000000000000000000000000000000000000'}</p>
+                        </div>
+                        <div>
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Certificate ID</p>
+                            <p className="text-xs font-mono font-bold text-slate-600">{certificate.certificate_id || 'CERT-000000'}</p>
+                        </div>
                     </div>
                 </div>
 
@@ -79,11 +85,15 @@ const CertificateDocument = ({ certificate }) => {
                 </div>
 
                 <div className="w-1/3 text-right">
-                    <div className="mb-12 border-b-2 border-slate-200 inline-block px-12 pb-2">
+                    <div className="mb-4 border-b-2 border-slate-200 inline-block px-12 pb-2">
                         <p className="font-serif italic text-2xl text-slate-700">Digital Signature</p>
                     </div>
                     <p className="text-xs font-bold text-slate-900 uppercase tracking-widest">Office of the Registrar</p>
                     <p className="text-[10px] text-slate-400 font-medium">Issue Date: {certificate.issue_date || 'N/A'}</p>
+                    <div className="mt-4 p-2 bg-slate-50 border border-slate-100 rounded-lg inline-block text-left">
+                         <p className="text-[7px] font-black text-slate-400 uppercase">Blockchain Registry</p>
+                         <p className="text-[7px] font-mono text-slate-500 truncate w-32">{certificate.blockchain_tx_hash || 'Pending...'}</p>
+                    </div>
                 </div>
             </div>
 

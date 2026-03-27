@@ -22,6 +22,8 @@ import { useAuth } from '../context/AuthContext'
 import CertificateDocument from '../components/CertificateDocument'
 import CertificateThumbnail from '../components/CertificateThumbnail'
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import { toPng } from 'html-to-image';
+import { saveAs } from 'file-saver';
 
 // Modal Component for Certificate (REMOVED AS REQUESTED)
 // Direct Print utility replaces this
@@ -233,12 +235,19 @@ const IssueCertificatePage = () => {
     }
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <h1 className="text-4xl font-bold text-white tracking-tight mb-12">Issue <span className="text-accent-pink">Certificate</span></h1>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative">
+            {/* Hidden High-Fidelity Print-Only Layer */}
+            {result && (
+                <div className="hidden print:block fixed inset-0 z-[99999] bg-white print-show">
+                    <CertificateDocument certificate={result.certificate} />
+                </div>
+            )}
 
-            <div className="grid lg:grid-cols-12 gap-10 items-start">
+            <h1 className="text-4xl font-bold text-white tracking-tight mb-12 print:hidden">Issue <span className="text-accent-pink">Certificate</span></h1>
+
+            <div className="grid lg:grid-cols-12 gap-10 items-start print:hidden">
                 {/* Left Form Column */}
-                <div className="lg:col-span-5 p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/5 shadow-2xl">
+                <div className="lg:col-span-5 p-4 rounded-[2.5rem] bg-white/[0.03] border border-white/5 shadow-2xl">
                     <div className="mb-8 p-4 rounded-2xl bg-accent-pink/5 border border-accent-pink/10 flex items-center justify-between">
                          <div className="flex items-center gap-3">
                              <DocumentTextIcon className="w-5 h-5 text-accent-pink" />
@@ -351,21 +360,41 @@ const IssueCertificatePage = () => {
                 </div>
 
                 {/* Right Certificate Column */}
-                <div className="lg:col-span-7 flex flex-col gap-6 sticky top-10">
+                <div className="lg:col-span-7 flex flex-col gap-6 sticky top-10 print:hidden">
                     <div className="flex items-center justify-between mb-2">
                         <h3 className="text-[10px] font-black text-gray-600 uppercase tracking-[0.3em]">Official Document View</h3>
                         {result && (
-                            <button 
-                                onClick={() => window.print()}
-                                className="text-[10px] font-black text-accent-pink flex items-center gap-2 hover:underline print:hidden"
-                            >
-                                <AcademicCapIcon className="w-4 h-4" />
-                                PRINT CERTIFICATE
-                            </button>
+                            <div className="flex gap-4">
+                                <button 
+                                    onClick={async () => {
+                                        const node = document.querySelector('.print-show-actual');
+                                        if (node) {
+                                            const dataUrl = await toPng(node, { 
+                                                cacheBust: true, 
+                                                quality: 1.0, 
+                                                pixelRatio: 2 
+                                            });
+                                            saveAs(dataUrl, `cert-${result.certificate.student_name}.png`);
+                                            toast.success('Certificate Downloaded as PNG');
+                                        }
+                                    }}
+                                    className="text-[10px] font-black text-emerald-500 border border-emerald-500/20 px-3 py-1 rounded-full flex items-center gap-2 hover:bg-emerald-500/10"
+                                >
+                                    <ArrowDownTrayIcon className="w-4 h-4" />
+                                    DOWNLOAD PNG (FOR VERIFY)
+                                </button>
+                                <button 
+                                    onClick={() => window.print()}
+                                    className="text-[10px] font-black text-accent-pink border border-accent-pink/20 px-3 py-1 rounded-full flex items-center gap-2 hover:bg-accent-pink/10"
+                                >
+                                    <AcademicCapIcon className="w-4 h-4" />
+                                    PRINT / PDF
+                                </button>
+                            </div>
                         )}
                     </div>
 
-                    <div className="bg-white rounded-3xl p-1 shadow-[0_50px_100px_rgba(0,0,0,0.15)] relative aspect-[1.414/1] overflow-hidden print-show">
+                    <div className="bg-white rounded-3xl p-1 shadow-[0_50px_100px_rgba(0,0,0,0.15)] relative aspect-[1.414/1] overflow-hidden print-show-actual">
                          <CertificateThumbnail certificate={{
                              student_name: formData.student_name || result?.certificate.student_name || "STUDENT NAME",
                              course_name: formData.course_name || result?.certificate.course_name || "COURSE NAME",
