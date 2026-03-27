@@ -29,7 +29,7 @@ import { NoisyBackground, GradientBlur } from '../components/Decorations'
 // Dashboard Layout
 const AdminLayout = () => {
     return (
-        <div className="min-h-screen bg-primary-dark relative overflow-hidden font-sans">
+        <div className="min-h-screen bg-primary-dark relative font-sans">
             <NoisyBackground />
             <GradientBlur color="accent-pink" position="top-right" />
             <GradientBlur color="accent-indigo" position="bottom-left" />

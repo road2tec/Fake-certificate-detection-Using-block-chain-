@@ -47,7 +47,7 @@ const CertificateModal = ({ isOpen, onClose, certificate }) => {
 // Layout
 const VerifierLayout = () => {
     return (
-        <div className="min-h-screen bg-primary-dark relative overflow-hidden">
+        <div className="min-h-screen bg-primary-dark relative">
             <NoisyBackground />
             <GradientBlur color="accent-pink" position="top-right" />
             <GradientBlur color="indigo-500" position="bottom-left" />

@@ -75,8 +75,8 @@ const Sidebar = ({ role }) => {
                 </div>
             </div>
 
-            {/* Nav Links */}
-            <nav className="flex-1 space-y-1.5 pt-4">
+            {/* Nav Links - Scrollable area */}
+            <nav className="flex-1 space-y-1.5 pt-4 overflow-y-auto no-scrollbar pr-2 -mr-2">
                 {links.map((link) => (
                     <NavLink
                         key={link.path}

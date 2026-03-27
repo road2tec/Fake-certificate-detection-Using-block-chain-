@@ -31,7 +31,7 @@ import { saveAs } from 'file-saver';
 // Layout
 const InstitutionLayout = () => {
     return (
-        <div className="min-h-screen bg-primary-dark relative overflow-hidden font-sans">
+        <div className="min-h-screen bg-primary-dark relative font-sans">
             <NoisyBackground />
             <GradientBlur color="indigo-500" position="top-left" />
             <GradientBlur color="accent-pink" position="bottom-right" />
