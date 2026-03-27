@@ -2,6 +2,8 @@
 
 A production-ready, decentralized platform designed to eliminate fraudulent credentials. This system leverages **Ethereum Blockchain** (via Ganache) and **Encrypted QR Codes** to ensure that every issued certificate is 100% authentic, immutable, and verifiable by anyone, anywhere.
 
+![System Preview](./docs/preview.png)
+
 ![Theme](https://img.shields.io/badge/UI-CertiCheck_Premium-db2777?style=for-the-badge)
 ![Main Branch](https://img.shields.io/badge/Status-Verified_Stable-success?style=for-the-badge)
 
