@@ -280,14 +280,23 @@ const VerifyCertificatePage = () => {
         // Try to extract hash from URL if present
         if (scannedText.includes('hash=')) {
             try {
-                const url = new URL(scannedText);
-                certificateHash = url.searchParams.get('hash') || scannedText;
+                // More robust extraction: find hash= and take the next 64 hex chars
+                const match = scannedText.match(/hash=([a-fA-F0-0x]{64,66})/);
+                if (match) {
+                    certificateHash = match[1];
+                } else {
+                    const url = new URL(scannedText);
+                    certificateHash = url.searchParams.get('hash') || scannedText;
+                }
             } catch (e) {
-                // If not a valid URL, maybe it's just raw text with hash=
-                const match = scannedText.match(/hash=([^&]+)/);
+                const match = scannedText.match(/hash=([^& \n\r]+)/);
                 if (match) certificateHash = match[1];
             }
         }
+        
+        // Final cleanup
+        certificateHash = certificateHash.trim().replace('0x', '');
+        setHashInput(certificateHash);
 
         setResult(null)
 

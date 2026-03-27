@@ -33,13 +33,15 @@ async def verify_certificate(
     users = get_users_collection()
     notifications = get_notifications_collection()
     
-    certificate_hash = verification_data.certificate_hash
+    certificate_hash = verification_data.certificate_hash.strip().lower()
+    if certificate_hash.startswith("0x"):
+        certificate_hash = certificate_hash[2:]
     
     # Check valid hash format
     if len(certificate_hash) != 64:
          return {
             "is_authentic": False,
-            "message": "INVALID QR CODE: The scanned code format is incorrect.",
+            "message": f"SCAN FAILED: The fingerprint format is invalid ({len(certificate_hash)} chars).",
             "blockchain_verified": False,
             "verification_id": None
         }
