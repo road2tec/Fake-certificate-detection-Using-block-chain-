@@ -401,6 +401,7 @@ const IssueCertificatePage = () => {
                              institute_name: formData.institute_name || result?.certificate.institute_name || "INSTITUTION NAME",
                              issue_date: formData.issue_date || result?.certificate.issue_date || "2024-01-01",
                              certificate_id: formData.certificate_id || result?.certificate.certificate_id || "CERT-000",
+                             certificate_hash: result?.certificate.certificate_hash,
                              qr_code_path: result?.certificate.qr_code_path
                          }} />
                     </div>
